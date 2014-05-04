@@ -1,4 +1,4 @@
-%option noyywrap yylineno nodefault
+%option noyywrap yylineno
 
 %{
 #include<stdio.h>
@@ -16,7 +16,8 @@
 }
 
 \"[^\"]*\" {
-	printf("S");
+	// printf("S");
+	return STRING;
 }
 
 "/*" {
@@ -38,27 +39,29 @@
 }
 
 ".define" {
-	printf("DF(%d)", yylineno);
+	// printf("DF(%d)", yylineno);
+	return DEFINE;
 }
 
 [ \t]*=[ \t]* {
-	printf(" EQ ");
+	// printf(" EQ ");
+	return EQU;
 }
 
-\$[0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F] {
-	printf("GA");
+\$[0-9a-fA-F]{4} {
+	// printf("ADDR");
+	return ADDR;
 }
 
-\$[0-9a-fA-F][0-9a-fA-F] {
-	printf("ZA");
+\$[0-9a-fA-F]{2} {
+	// printf("ZPADDR");
+	return ZPADDR;
 }
 
 [a-zA-Z][a-zA-Z0-9_]* {
-	printf("NAME");
+	// printf("LABEL");
+	return LABEL;
 }
-
-
-
 
 
 %%

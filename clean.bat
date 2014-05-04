@@ -4,4 +4,5 @@ cd ..\lex
 del lex\*.c
 cd ..\src
 del *.c
+del *.h
 cd ..

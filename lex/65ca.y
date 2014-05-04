@@ -6,7 +6,7 @@
 extern int yylineno;
 
 void yyerror(const char *err);
-void yyparse();
+int yylex();
 
 
 %}
@@ -14,13 +14,16 @@ void yyparse();
 // keywords
 %token DEFINE
 // var
-%token ZPADDR ADDR LABEL
+%token ZPADDR ADDR LABEL STRING
 // char
 %token EQU
 %%
 exp:  DEFINE LABEL EQU ADDR
 	| DEFINE LABEL EQU ZPADDR
 
+exp:  ADDR
+	| ZPADDR
+	| exp '+' exp
 
 %%
 
@@ -32,9 +35,11 @@ int main(int arc, char *argv[])
 	return 0;
 }
 
+extern char *yytext;
+
 void yyerror(const char *err)
 {
-	printf(" E(L%d):%s\n ",yylineno,err);
+	printf("%s (line %d): %s\n ",err,yylineno,yytext);
 }
 
 
