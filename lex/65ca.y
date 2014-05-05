@@ -19,6 +19,8 @@ int yylex();
 // I
 %token LDA LDX LDY STA STX STY TAX TXA TAY TYA TSX TXS ADC SBC INC DEC INX DEX INY DEY AND ORA EOR CLC SEC CLD SED CLV CLI SEI CMP CPX CPY BIT ASL LSR ROL ROR PHA PLA PHP PLP JMP BEQ BNE BCS BCC BMI BPL BVS BVC JSR RTS INT NOP RTI BRK
 
+// char
+%token BL BR CM X Y
 
 %%
 
@@ -31,20 +33,45 @@ line
 	: instruction
 ;
 
-
-instruction
-	: lda
+ins : LDA | LDX | LDY | STA | STX | STY | TAX | TXA | TAY | TYA | TSX | TXS | ADC | SBC | INC | DEC | INX | DEX | INY | DEY | AND | ORA | EOR | CLC | SEC | CLD | SED | CLV | CLI | SEI | CMP | CPX | CPY | BIT | ASL | LSR | ROL | ROR | PHA | PLA | PHP | PLP | JMP | BEQ | BNE | BCS | BCC | BMI | BPL | BVS | BVC | JSR | RTS | INT | NOP | RTI | BRK
 ;
 
-lda
-	: LDA ADDR {
-		D(" -ADDR");
+instruction
+	: ins
+	| ins addr
+;
+
+
+addr
+	: ADDR {
+		D(" -ADDR-");
 	}
-	| LDA BYTE {
-		D(" -BYTE");
+	| BYTE {
+		D(" -BYTE-");
 	}
-	| LDA ZPADDR {
-		D(" -ZPADDR");
+	| ZPADDR {
+		D(" -ZPADDR-");
+	}
+	| ADDR CM X {
+		D(" -XADDR-");
+	}
+	| ADDR CM Y {
+		D(" -YADDR-");
+	}
+	| ZPADDR CM X {
+		D(" -XZPADDR-");
+	}
+	| ZPADDR CM Y {
+		D(" -YZPADDR-");
+	}
+	| BL ADDR BR {
+		D(" -INDIRADDR-");
+	}
+	| BL ZPADDR CM X BR{
+		D(" -XINDIRADDR-");
+	}
+	| BL ZPADDR BR CM Y {
+		D(" -INDIRYADDR-");
 	}
 ;
 
