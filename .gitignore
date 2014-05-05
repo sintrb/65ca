@@ -27,3 +27,4 @@
 *.tab.c
 *.tab.h
 *.yy.h
+*.pyc
