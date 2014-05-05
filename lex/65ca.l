@@ -1,9 +1,9 @@
 %option noyywrap yylineno caseless
 
 %{
-#include<stdio.h>
 #include "65ca.tab.h"
 #include "define.h"
+#include "functions.h"
 
 #define RETTOKEN(t) D(#t);return t;
 
@@ -14,6 +14,10 @@
 OCT [0-9]
 HEX [0-9a-fA-F]
 BIN [0-1]
+
+IDENTPRE [_a-zA-Z]
+IDENTSUF [_a-zA-Z0-9]
+
 
 
 
@@ -103,10 +107,22 @@ RTI { RETTOKEN(RTI); }
 BRK { RETTOKEN(BRK); }
 
 
-\#\${HEX}{4} { RETTOKEN(WORD); }
-\#\${HEX}{2} { RETTOKEN(BYTE); }
-${HEX}{4} { RETTOKEN(ADDR); }
-${HEX}{2} { RETTOKEN(ZPADDR); }
+\#\${HEX}{4} {
+	curval = M_WORD(yytext+2);
+	RETTOKEN(WORD);
+}
+\#\${HEX}{2} {
+	curval = M_BYTE(yytext+2);
+	RETTOKEN(BYTE);
+}
+${HEX}{4} {
+	curval = M_WORD(yytext+1);
+	RETTOKEN(ADDR);
+}
+${HEX}{2} {
+	curval = M_BYTE(yytext+1);
+	RETTOKEN(ZPADDR);
+}
 
 "(" { RETTOKEN(BL); }
 ")" { RETTOKEN(BR); }
@@ -114,6 +130,16 @@ ${HEX}{2} { RETTOKEN(ZPADDR); }
 "X" { RETTOKEN(X); }
 "Y" { RETTOKEN(Y); }
 
+{IDENTPRE}{IDENTSUF}* {
+	if(yytext[0] == 'Z'){
+		RETTOKEN(ZPADDR);
+	}
+	if(yytext[0] == 'A'){
+		RETTOKEN(ADDR);
+	}
+}
 
+[;\n\r]+ { return NL; }
+[ \t] {}
 %%
 

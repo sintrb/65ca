@@ -1,7 +1,8 @@
 
 %{
-#include <stdio.h>
 #include "define.h"
+#include "functions.h"
+#include "instructions.h"
 
 #define YYINPUT()	yyinput()
 
@@ -9,6 +10,11 @@ extern int yylineno;
 
 void yyerror(const char *err);
 int yylex();
+
+
+
+
+
 
 %}
 
@@ -20,7 +26,7 @@ int yylex();
 %token LDA LDX LDY STA STX STY TAX TXA TAY TYA TSX TXS ADC SBC INC DEC INX DEX INY DEY AND ORA EOR CLC SEC CLD SED CLV CLI SEI CMP CPX CPY BIT ASL LSR ROL ROR PHA PLA PHP PLP JMP BEQ BNE BCS BCC BMI BPL BVS BVC JSR RTS INT NOP RTI BRK
 
 // char
-%token BL BR CM X Y
+%token BL BR CM X Y NL
 
 %%
 
@@ -31,6 +37,9 @@ lines
 
 line
 	: instruction
+	| NL {
+		D("\n");
+	}
 ;
 
 ins : LDA | LDX | LDY | STA | STX | STY | TAX | TXA | TAY | TYA | TSX | TXS | ADC | SBC | INC | DEC | INX | DEX | INY | DEY | AND | ORA | EOR | CLC | SEC | CLD | SED | CLV | CLI | SEI | CMP | CPX | CPY | BIT | ASL | LSR | ROL | ROR | PHA | PLA | PHP | PLP | JMP | BEQ | BNE | BCS | BCC | BMI | BPL | BVS | BVC | JSR | RTS | INT | NOP | RTI | BRK
@@ -38,42 +47,36 @@ ins : LDA | LDX | LDY | STA | STX | STY | TAX | TXA | TAY | TYA | TSX | TXS | AD
 
 instruction
 	: ins
-	| ins addr
+	| ins addrtype
 ;
 
 
-addr
-	: ADDR {
-		D(" -ADDR-");
-	}
-	| BYTE {
-		D(" -BYTE-");
-	}
-	| ZPADDR {
-		D(" -ZPADDR-");
-	}
-	| ADDR CM X {
-		D(" -XADDR-");
-	}
-	| ADDR CM Y {
-		D(" -YADDR-");
-	}
-	| ZPADDR CM X {
-		D(" -XZPADDR-");
-	}
-	| ZPADDR CM Y {
-		D(" -YZPADDR-");
-	}
-	| BL ADDR BR {
-		D(" -INDIRADDR-");
-	}
-	| BL ZPADDR CM X BR{
-		D(" -XINDIRADDR-");
-	}
-	| BL ZPADDR BR CM Y {
-		D(" -INDIRYADDR-");
-	}
+
+addr : ADDR { D(" -ADDR-"); };
+byte : BYTE { D(" -BYTE-"); };
+zpaddr : ZPADDR { D(" -ZPADDR-"); };
+xaddr : addr CM X { D(" -XADDR-"); };
+yaddr : addr CM Y { D(" -YADDR-"); };
+xzpaddr : zpaddr CM X { D(" -XZPADDR-"); };
+yzpaddr : zpaddr CM Y { D(" -INDIRADDR-"); };
+idiraddr : BL addr BR { D(" -INDIRADDR-"); };
+xidiraddr : BL zpaddr CM X BR { D(" -XIDIRADDR-"); };
+yidiraddr : BL zpaddr BR CM Y { D(" -YIDIRADDR-"); };
+
+
+addrtype
+	: addr
+	| byte
+	| zpaddr
+	| xaddr
+	| yaddr
+	| xzpaddr
+	| yzpaddr
+	| idiraddr
+	| xidiraddr
+	| yidiraddr
 ;
+
 
 %%
 
