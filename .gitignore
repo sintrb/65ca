@@ -22,3 +22,8 @@
 *.x86_64
 *.hex
 *.null
+*.output
+
+*.tab.c
+*.tab.h
+*.yy.h
