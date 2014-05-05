@@ -1,3 +1,4 @@
+指令	寻址	机器码	尺寸	类型
 LDA	($xx, X)	0xa1	2	XIDIRADDR
 LDA	$xx	0xa5	2	ZPADDR
 LDA	#$xx	0xa9	2	BYTE
@@ -9,7 +10,7 @@ LDA	$xxxx, X	0xbd	3	XADDR
 LDX	#$xx	0xa2	2	BYTE
 LDX	$xx	0xa6	2	ZPADDR
 LDX	$xxxx	0xae	3	ADDR
-LDX	$xx, Y	0xb6	2	INDIRADDR
+LDX	$xx, Y	0xb6	2	YZPADDR
 LDX	$xxxx, Y	0xbe	3	YADDR
 LDY	#$xx	0xa0	2	BYTE
 LDY	$xx	0xa4	2	ZPADDR
@@ -25,7 +26,7 @@ STA	$xxxx, Y	0x99	3	YADDR
 STA	$xxxx, X	0x9d	3	XADDR
 STX	$xx	0x86	2	ZPADDR
 STX	$xxxx	0x8e	3	ADDR
-STX	$xx, Y	0x96	2	INDIRADDR
+STX	$xx, Y	0x96	2	YZPADDR
 STY	$xx	0x84	2	ZPADDR
 STY	$xxxx	0x8c	3	ADDR
 STY	$xx, X	0x94	2	XZPADDR
@@ -71,10 +72,10 @@ AND	($xx), Y	0x31	2	YIDIRADDR
 AND	$xx, X	0x35	2	XZPADDR
 AND	$xxxx, Y	0x39	3	YADDR
 AND	$xxxx, X	0x3d	3	XADDR
-ORA	($xx, X)	0x1	2	XIDIRADDR
-ORA	$xx	0x5	2	ZPADDR
-ORA	#$xx	0x9	2	BYTE
-ORA	$xxxx	0xd	3	ADDR
+ORA	($xx, X)	0x01	2	XIDIRADDR
+ORA	$xx	0x05	2	ZPADDR
+ORA	#$xx	0x09	2	BYTE
+ORA	$xxxx	0x0d	3	ADDR
 ORA	($xx), Y	0x11	2	YIDIRADDR
 ORA	$xx, X	0x15	2	XZPADDR
 ORA	$xxxx, Y	0x19	3	YADDR
@@ -110,9 +111,9 @@ CPY	$xx	0xc4	2	ZPADDR
 CPY	$xxxx	0xcc	3	ADDR
 BIT	$xx	0x24	2	ZPADDR
 BIT	$xxxx	0x2c	3	ADDR
-ASL		0xa	1	
-ASL	$xx	0x6	2	ZPADDR
-ASL	$xxxx	0xe	3	ADDR
+ASL		0x0a	1	
+ASL	$xx	0x06	2	ZPADDR
+ASL	$xxxx	0x0e	3	ADDR
 ASL	$xx, X	0x16	2	XZPADDR
 ASL	$xxxx, X	0x1e	3	XADDR
 LSR		0x4a	1	
@@ -132,21 +133,21 @@ ROR	$xx, X	0x76	2	XZPADDR
 ROR	$xxxx, X	0x7e	3	XADDR
 PHA		0x48	1	
 PLA		0x68	1	
-PHP		0x8	1	
+PHP		0x08	1	
 PLP		0x28	1	
 JMP	$xxxx	0x4c	3	ADDR
-JMP	($xxxx)	0x6c	3	INDIRADDR
-BEQ	$xxxx	0xf0	2	ADDR
-BNE	$xxxx	0xd0	2	ADDR
-BCS	$xxxx	0xb0	2	ADDR
-BCC	$xxxx	0x90	2	ADDR
-BMI	$xxxx	0x30	2	ADDR
-BPL	$xxxx	0x10	2	ADDR
-BVS	$xxxx	0x70	2	ADDR
-BVC	$xxxx	0x50	2	ADDR
+JMP	($xxxx)	0x6c	3	IDIRADDR
+BEQ	$xxxx	0xf0	2	READDR
+BNE	$xxxx	0xd0	2	READDR
+BCS	$xxxx	0xb0	2	READDR
+BCC	$xxxx	0x90	2	READDR
+BMI	$xxxx	0x30	2	READDR
+BPL	$xxxx	0x10	2	READDR
+BVS	$xxxx	0x70	2	READDR
+BVC	$xxxx	0x50	2	READDR
 JSR	$xxxx	0x20	3	ADDR
 RTS		0x60	1	
-INT		0x0	1	
+INT		0x00	1	
 NOP		0xea	1	
 RTI		0x40	1	
-BRK		0x0	1	
+BRK		0x00	1	
