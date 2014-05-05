@@ -1,0 +1,200 @@
+Terminals unused in grammar
+
+   STRING
+   WORD
+   LDY
+   LDX
+
+
+Grammar
+
+    0 $accept: lines $end
+
+    1 lines: line
+    2      | line lines
+
+    3 line: instruction
+    4     | internal
+    5     | '\n'
+    6     | '\t'
+
+    7 instruction: LDA ADDR
+    8            | LDA BYTE
+    9            | LDA ZPADDR
+
+   10 internal: DEFINE IDENT EQU BYTE
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+'\t' (9) 6
+'\n' (10) 5
+error (256)
+DEFINE (258) 10
+STRING (259)
+BYTE (260) 8 10
+WORD (261)
+ZPADDR (262) 9
+ADDR (263) 7
+IDENT (264) 10
+EQU (265) 10
+LDA (266) 7 8 9
+LDY (267)
+LDX (268)
+
+
+Nonterminals, with rules where they appear
+
+$accept (16)
+    on left: 0
+lines (17)
+    on left: 1 2, on right: 0 2
+line (18)
+    on left: 3 4 5 6, on right: 1 2
+instruction (19)
+    on left: 7 8 9, on right: 3
+internal (20)
+    on left: 10, on right: 4
+
+
+State 0
+
+    0 $accept: . lines $end
+
+    DEFINE  shift, and go to state 1
+    LDA     shift, and go to state 2
+    '\n'    shift, and go to state 3
+    '\t'    shift, and go to state 4
+
+    lines        go to state 5
+    line         go to state 6
+    instruction  go to state 7
+    internal     go to state 8
+
+
+State 1
+
+   10 internal: DEFINE . IDENT EQU BYTE
+
+    IDENT  shift, and go to state 9
+
+
+State 2
+
+    7 instruction: LDA . ADDR
+    8            | LDA . BYTE
+    9            | LDA . ZPADDR
+
+    BYTE    shift, and go to state 10
+    ZPADDR  shift, and go to state 11
+    ADDR    shift, and go to state 12
+
+
+State 3
+
+    5 line: '\n' .
+
+    $default  reduce using rule 5 (line)
+
+
+State 4
+
+    6 line: '\t' .
+
+    $default  reduce using rule 6 (line)
+
+
+State 5
+
+    0 $accept: lines . $end
+
+    $end  shift, and go to state 13
+
+
+State 6
+
+    1 lines: line .
+    2      | line . lines
+
+    DEFINE  shift, and go to state 1
+    LDA     shift, and go to state 2
+    '\n'    shift, and go to state 3
+    '\t'    shift, and go to state 4
+
+    $default  reduce using rule 1 (lines)
+
+    lines        go to state 14
+    line         go to state 6
+    instruction  go to state 7
+    internal     go to state 8
+
+
+State 7
+
+    3 line: instruction .
+
+    $default  reduce using rule 3 (line)
+
+
+State 8
+
+    4 line: internal .
+
+    $default  reduce using rule 4 (line)
+
+
+State 9
+
+   10 internal: DEFINE IDENT . EQU BYTE
+
+    EQU  shift, and go to state 15
+
+
+State 10
+
+    8 instruction: LDA BYTE .
+
+    $default  reduce using rule 8 (instruction)
+
+
+State 11
+
+    9 instruction: LDA ZPADDR .
+
+    $default  reduce using rule 9 (instruction)
+
+
+State 12
+
+    7 instruction: LDA ADDR .
+
+    $default  reduce using rule 7 (instruction)
+
+
+State 13
+
+    0 $accept: lines $end .
+
+    $default  accept
+
+
+State 14
+
+    2 lines: line lines .
+
+    $default  reduce using rule 2 (lines)
+
+
+State 15
+
+   10 internal: DEFINE IDENT EQU . BYTE
+
+    BYTE  shift, and go to state 16
+
+
+State 16
+
+   10 internal: DEFINE IDENT EQU BYTE .
+
+    $default  reduce using rule 10 (internal)

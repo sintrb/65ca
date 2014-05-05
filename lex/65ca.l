@@ -8,12 +8,17 @@
 %}
 
 
+OCT [0-9]
+HEX [0-9a-fA-F]
+BIN [0-1]
+
 
 %%
 
 \n[\t\n\r]* {
-	printf("\n");
+	// printf("\n");
 }
+
 
 \"[^\"]*\" {
 	// printf("S");
@@ -43,26 +48,47 @@
 	return DEFINE;
 }
 
-[ \t]*=[ \t]* {
-	// printf(" EQ ");
+lda {
+	// printf("LDA");
+	return LDA;
+}
+
+ldy {
+	// printf("LDY");
+	return LDY;
+}
+
+
+
+[ t]*=[ t]* {
+	// printf("EQU");
 	return EQU;
 }
 
-\$[0-9a-fA-F]{4} {
+\#\${HEX}{2} {
+	// printf("BYTE");
+	return BYTE;
+}
+
+\#\$HEX{4} {
+	// printf("WORD");
+	return WORD;
+}
+
+\$HEX{4} {
 	// printf("ADDR");
 	return ADDR;
 }
 
-\$[0-9a-fA-F]{2} {
+\$HEX{2} {
 	// printf("ZPADDR");
 	return ZPADDR;
 }
 
 [a-zA-Z][a-zA-Z0-9_]* {
-	// printf("LABEL");
-	return LABEL;
+	// printf("IDENT");
+	return IDENT;
 }
-
 
 %%
 

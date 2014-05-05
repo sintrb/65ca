@@ -8,22 +8,49 @@ extern int yylineno;
 void yyerror(const char *err);
 int yylex();
 
-
 %}
 
 // keywords
-%token DEFINE
+%token DEFINE STRING
 // var
-%token ZPADDR ADDR LABEL STRING
+%token BYTE WORD ZPADDR ADDR IDENT
 // char
 %token EQU
-%%
-exp:  DEFINE LABEL EQU ADDR
-	| DEFINE LABEL EQU ZPADDR
 
-exp:  ADDR
-	| ZPADDR
-	| exp '+' exp
+// INS
+%token LDA LDY LDX
+
+%%
+
+lines : 
+	  line
+	| line lines
+;
+
+line :
+	  instruction
+	| internal
+	| '\n'
+	| '\t'
+;
+
+instruction :
+	  LDA ADDR {
+		// printf("ADDR");
+	}
+	| LDA BYTE {
+		// printf("BYTE");
+	}
+	| LDA ZPADDR {
+		// printf("ZPADDR");
+	}
+;
+
+internal :
+	  DEFINE IDENT EQU BYTE {
+		// printf("int define k=v");
+	}
+;
 
 %%
 
