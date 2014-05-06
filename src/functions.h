@@ -5,8 +5,10 @@ Robin 2014-05-05
 
 
 #ifndef FUNCTIONS_H
+#define FUNCTIONS_H
 
 #include "define.h"
+#include "basefuns.h"
 
 extern t_val curval;
 

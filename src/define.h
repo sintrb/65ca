@@ -4,6 +4,7 @@ Robin 2014-05-05
 **/
 
 #ifndef DEFINE_H
+#define DEFINE_H
 
 #include <stdio.h>
 #include <stdlib.h>
