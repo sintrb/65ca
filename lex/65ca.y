@@ -8,7 +8,7 @@
 
 extern int yylineno;
 
-void yyerror(const char *err);
+
 int yylex();
 
 
@@ -217,20 +217,9 @@ instruction
 
 int main(int arc, char *argv[])
 {
-	t_map map = map_newmap();
-	map_put(map, "name", (void*)"trb");
-	map_put(map, "age", (void*)"18");
-
 	yyparse();
-
-
-	printf("name:%s\n", map_get(map, "name")->data);
-	map_put(map, "name", (void*)"ttt");
-	printf("name:%s\n", map_get(map, "name")->data);
-	printf("age:%s\n", map_get(map, "age")->data);
-
-
-
+	endout();
+	printf("compile success!!!\n");
 	return 0;
 }
 
@@ -238,7 +227,8 @@ extern char *yytext;
 
 void yyerror(const char *err)
 {
-	printf("%s (line %d): %s\n ",err,yylineno,yytext);
+	fprintf(stderr, "%s (line %d): %s\n ",err,yylineno,yytext);
+	exit(1);
 }
 
 

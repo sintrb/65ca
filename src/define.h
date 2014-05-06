@@ -10,7 +10,7 @@ Robin 2014-05-05
 #include <stdlib.h>
 
 
-#define DEBUG_MODE 1
+// #define DEBUG_MODE 1
 
 #define YYINPUT()	yyinput()
 
@@ -23,10 +23,12 @@ Robin 2014-05-05
 
 
 extern char *yytext;
-
+void yyerror(const char *err);
 typedef unsigned int t_val;
 
 
+
+#define M_ERROR(_s) yyerror(_s)
 
 // trans
 #define M_BETWEEN(_v, _min, _max) ((_v)>=(_min) && (_v)<=(_max))
