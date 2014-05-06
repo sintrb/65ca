@@ -1,0 +1,6 @@
+// for nesa
+.segmentdefine name = ROM, size = 321, start = 0, fill = 0;
+
+.seg ROM
+.org $0000
+.include test.asm

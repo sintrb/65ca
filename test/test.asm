@@ -136,17 +136,16 @@ php
 plp 
 jmp $e30f
 jmp ($0ef7)
-beq $5f77
-bne $ab1a
-bcs $e0fc
-bcc $013a
-bmi $eda4
-bpl $8d36
-bvs $3a1f
-bvc $7c95
+beq $00c1
+bne $00c2
+bcs $00c3
+bcc $00c4
+bmi $00ca
+bpl $00c2
+bvs $00c7
+bvc $00d1
 jsr $e348
 rts 
-int $6e7a
 nop 
 rti 
 brk 
