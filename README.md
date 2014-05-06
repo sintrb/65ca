@@ -7,8 +7,8 @@ A 6502CPU Assembler.
 ### 环境说明
 目前整个项目都是在Windows上面开发的
 
-* Windows 上面所需的flex bison gcc 可以去这下载[http://pan.baidu.com/s/1hqHt4OG](http://pan.baidu.com/s/1hqHt4OG)
-* 大部分自动工具都使用Python编写，如果需要运行请安装Python 2.x （推荐2.7.3） [https://www.python.org/downloads/](https://www.python.org/downloads/)
+* Windows 上面所需的flex bison gcc 可以去这[下载](http://pan.baidu.com/s/1hqHt4OG)
+* 大部分自动工具都使用Python编写，如果需要运行请安装Python 2.x （推荐2.7.3） [下载](https://www.python.org/downloads/)
  
 ### 结构说明
 
