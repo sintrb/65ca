@@ -4,6 +4,11 @@
 # @Author  : Robin
 # @Version : 1.0
 
+'''
+自动生成6502汇编语法规则。
+依赖于../doc/instructions.txt文件，该文件从../doc/instructions.xls文件中复制得到。
+'''
+
 import re
 
 f = open("../doc/instructions.txt")
