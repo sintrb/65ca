@@ -4,6 +4,10 @@
 # @Author  : Robin
 # @Version : 1.0
 
+'''
+自动随机生成所有的汇编指令，用于测试编译器。
+'''
+
 import re
 import random
 
