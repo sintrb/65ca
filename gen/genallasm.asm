@@ -1,92 +1,92 @@
-lda ($68, x)
-lda $4a
-lda #$30
-lda $96a4
-lda ($ec), y
-lda $11, x
-lda $15c9, y
-lda $dd2d, x
-ldx #$e7
-ldx $e7
-ldx $2d4f
-ldx $ff, y
-ldx $6dee, y
-ldy #$d8
-ldy $33
-ldy $77a6
-ldy $d0, x
-ldy $f316, x
-sta ($9d, x)
-sta $48
-sta $8c81
-sta ($a2), y
-sta $3e, x
-sta $3411, y
-sta $e8d6, x
-stx $b8
-stx $4ed7
-stx $fc, y
-sty $87
-sty $cde0
-sty $dd, x
+lda ($4e, x)
+lda $ed
+lda #$28
+lda $ff55
+lda ($ae), y
+lda $32, x
+lda $3d4b, y
+lda $b5a1, x
+ldx #$18
+ldx $10
+ldx $8432
+ldx $64, y
+ldx $7683, y
+ldy #$c2
+ldy $b4
+ldy $e538
+ldy $12, x
+ldy $9705, x
+sta ($5c, x)
+sta $68
+sta $0ecf
+sta ($36), y
+sta $f2, x
+sta $2d5d, y
+sta $4845, x
+stx $92
+stx $220e
+stx $b5, y
+sty $8c
+sty $fe67
+sty $ec, x
 tax 
 txa 
 tay 
 tya 
 tsx 
 txs 
-adc ($bd, x)
-adc $ae
-adc #$49
-adc $b874
-adc ($fd), y
-adc $f0, x
-adc $8ec9, y
-adc $12e5, x
-sbc ($d8, x)
-sbc $9a
-sbc #$cc
-sbc $03aa
-sbc ($e3), y
-sbc $eb, x
-sbc $f18f, y
-sbc $ce54, x
-inc $52
-inc $095a
-inc $16, x
-inc $81f1, x
-dec $a4
-dec $0e82
-dec $70, x
-dec $9af0, x
+adc ($f6, x)
+adc $0f
+adc #$9c
+adc $1711
+adc ($9a), y
+adc $c3, x
+adc $7bb0, y
+adc $8d3c, x
+sbc ($29, x)
+sbc $42
+sbc #$ba
+sbc $792a
+sbc ($9e), y
+sbc $72, x
+sbc $1179, y
+sbc $c992, x
+inc $89
+inc $c4d8
+inc $5a, x
+inc $c06d, x
+dec $73
+dec $cc4a
+dec $d1, x
+dec $6e09, x
 inx 
 dex 
 iny 
 dey 
-and ($0b, x)
-and $3e
-and #$27
-and $ffd5
-and ($81), y
-and $98, x
-and $eeaf, y
-and $53d1, x
-ora ($3d, x)
-ora $46
-ora #$6a
-ora $e6f4
-ora ($0e), y
-ora $a9, x
-ora $3956, y
-ora $96a8, x
-eor ($e2, x)
-eor $ea
-eor #$8c
-eor $33fa
-eor ($af), y
-eor $ad, x
-eor $0b0d, y
-eor $d689, x
+and ($7e, x)
+and $39
+and #$e3
+and $3006
+and ($8f), y
+and $ec, x
+and $d01f, y
+and $6433, x
+ora ($30, x)
+ora $2b
+ora #$0b
+ora $0de6
+ora ($14), y
+ora $9f, x
+ora $14bd, y
+ora $f740, x
+eor ($c4, x)
+eor $b2
+eor #$79
+eor $0047
+eor ($f3), y
+eor $e9, x
+eor $ca59, y
+eor $a865, x
 clc 
 sec 
 cld 
@@ -94,59 +94,59 @@ sed
 clv 
 cli 
 sei 
-cmp ($16, x)
-cmp $6e
-cmp #$69
-cmp $e11e
-cmp ($1a), y
-cmp $6f, x
-cmp $c852, y
-cmp $ab51, x
-cpx #$07
-cpx $01
-cpx $ce95
-cpy #$de
-cpy $cf
-cpy $b167
-bit $9d
-bit $3b69
+cmp ($c4, x)
+cmp $af
+cmp #$f9
+cmp $2ddb
+cmp ($de), y
+cmp $5f, x
+cmp $1241, y
+cmp $8151, x
+cpx #$85
+cpx $5b
+cpx $9a12
+cpy #$78
+cpy $13
+cpy $d369
+bit $c4
+bit $8fd6
 asl 
-asl $88
-asl $19b8
-asl $c4, x
-asl $6088, x
+asl $d5
+asl $6345
+asl $22, x
+asl $cb64, x
 lsr 
-lsr $ad
-lsr $d3fb
-lsr $5a, x
-lsr $f6ba, x
+lsr $b5
+lsr $d102
+lsr $00, x
+lsr $c75a, x
 rol 
-rol $52
-rol $5516
-rol $3c, x
-rol $907b, x
+rol $fc
+rol $c51c
+rol $de, x
+rol $2af5, x
 ror 
-ror $80
-ror $6b3c
-ror $4f, x
-ror $4b56, x
+ror $a2
+ror $2d9f
+ror $b5, x
+ror $42c9, x
 pha 
 pla 
 php 
 plp 
-jmp $4263
-jmp ($c087)
-beq $e8f6
-bne $9e0b
-bcs $d184
-bcc $bb6f
-bmi $5b76
-bpl $b012
-bvs $72e1
-bvc $70c9
-jsr $a577
+jmp $e30f
+jmp ($0ef7)
+beq $5f77
+bne $ab1a
+bcs $e0fc
+bcc $013a
+bmi $eda4
+bpl $8d36
+bvs $3a1f
+bvc $7c95
+jsr $e348
 rts 
-int 
+int $6e7a
 nop 
 rti 
 brk 

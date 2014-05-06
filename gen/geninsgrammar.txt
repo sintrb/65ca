@@ -147,7 +147,7 @@ instruction
 	| BVC addr { M_WRITEREL(0x50); }
 	| JSR addr { M_WRITEWORD(0x20); }
 	| RTS  { M_WRITECMD(0x60); }
-	| INT  { M_WRITECMD(0x00); }
+	| INT addr { M_WRITEWORD(0x00); }
 	| NOP  { M_WRITECMD(0xea); }
 	| RTI  { M_WRITECMD(0x40); }
 	| BRK  { M_WRITECMD(0x00); }

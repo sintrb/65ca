@@ -1,4 +1,3 @@
-指令	寻址	机器码	尺寸	类型
 LDA	($xx, X)	0xa1	2	XIDIRADDR
 LDA	$xx	0xa5	2	ZPADDR
 LDA	#$xx	0xa9	2	BYTE
@@ -147,7 +146,7 @@ BVS	$xxxx	0x70	2	READDR
 BVC	$xxxx	0x50	2	READDR
 JSR	$xxxx	0x20	3	ADDR
 RTS		0x60	1	
-INT		0x00	1	
+INT	$xxxx	0x00	1	ADDR
 NOP		0xea	1	
 RTI		0x40	1	
 BRK		0x00	1	
