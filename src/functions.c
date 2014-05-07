@@ -75,7 +75,7 @@ t_val cal_readdr(t_val nowaddr, t_val tagaddr){
 struct label * cmd_label(const char *name, t_val val, yytokentype token){
 	struct mapnode * node = map_get(labels, name);
 	struct label *lab = NULL;
-	D("cmd_label(%s) ", name);
+	// D("cmd_label(%s) ", name);
 	if(node){
 		lab = (struct label *)node->data;
 		M_ERROR("label \"%s\" defined at %s(%d)", name, lab->filepos.filename, lab->filepos.lineno);
