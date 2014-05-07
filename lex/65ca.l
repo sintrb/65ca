@@ -7,6 +7,9 @@
 
 #define RETTOKEN(t) D(#t);return t;
 
+
+#define M_ERROR_NOTNUM() M_ERROR("not number");
+
 %}
 
 
@@ -17,8 +20,9 @@ BIN [0-1]
 
 IDENTPRE [_a-zA-Z]
 IDENTSUF [_a-zA-Z0-9]
+IDENTNOT [^_^a-z^A-Z^0-9]
 
-
+NL [;\n\r]
 
 
 %%
@@ -106,39 +110,79 @@ NOP { RETTOKEN(NOP); }
 RTI { RETTOKEN(RTI); }
 BRK { RETTOKEN(BRK); }
 
-
+;NUMBER
+\#\${HEX}{4}{HEX}+ {
+	M_ERROR_NOTNUM();
+}
 \#\${HEX}{4} {
-	curval = M_WORD(yytext+2);
+	curval = M_HEX_WORD(yytext+2);
 	RETTOKEN(WORD);
 }
+\#\${HEX}{3} {
+	M_ERROR_NOTNUM();
+}
 \#\${HEX}{2} {
-	curval = M_BYTE(yytext+2);
+	curval = M_HEX_BYTE(yytext+2);
 	RETTOKEN(BYTE);
 }
+
+;ADDRESS
+\${HEX}{4}{HEX}+ {
+	M_ERROR_NOTNUM();
+}
 ${HEX}{4} {
-	curval = M_WORD(yytext+1);
+	curval = M_HEX_WORD(yytext+1);
 	RETTOKEN(ADDR);
 }
+${HEX}{3} {
+	M_ERROR_NOTNUM();
+}
 ${HEX}{2} {
-	curval = M_BYTE(yytext+1);
+	curval = M_HEX_BYTE(yytext+1);
 	RETTOKEN(ZPADDR);
 }
 
-"(" { RETTOKEN(BL); }
-")" { RETTOKEN(BR); }
-"," { RETTOKEN(CM); }
+;VALUE
+\%{BIN}+ {
+	curval = M_BIN_BYTE(yytext+1);
+	RETTOKEN(NUM);
+}
+{OCT}+ {
+	curval = M_OCT_BYTE(yytext);
+	RETTOKEN(NUM);
+}
+
+"{" { RETTOKEN(L_BRACE); }
+"}" { RETTOKEN(R_BRACE); }
+"[" { RETTOKEN(L_BRACKET); }
+"]" { RETTOKEN(R_BRACKET); }
+"(" { RETTOKEN(L_PARENTHESIS); }
+")" { RETTOKEN(R_PARENTHESIS); }
+"," { RETTOKEN(COMMA); }
+":" { RETTOKEN(COLON); }
+";" { RETTOKEN(SEMICOLON); }
+"=" { RETTOKEN(EQUAL); }
+
 "X" { RETTOKEN(X); }
 "Y" { RETTOKEN(Y); }
 
-{IDENTPRE}{IDENTSUF}* {
-	if(yytext[0] == 'Z'){
-		RETTOKEN(ZPADDR);
-	}
-	if(yytext[0] == 'A'){
-		RETTOKEN(ADDR);
-	}
+"#" { RETTOKEN(POUND); }
+
+
+\.ORG { RETTOKEN(CMD_ORG); }
+
+\.LAB|LABEL {
+	curval = CURADDR;
+	RETTOKEN(CMD_LAB);
 }
 
-[;\n\r]+ { return NL; }
-[ \t] {}
+
+{IDENTPRE}{IDENTSUF}* {
+	M_SAVEIDENT(yytext);
+	D("IDENT");
+	return token_label(curident);
+}
+
+{NL}+ { return NL; }
+[ \t\n] {}
 %%

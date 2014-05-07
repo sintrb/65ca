@@ -8,17 +8,21 @@ Robin 2014-05-06
 #include <stdlib.h>
 #include <string.h>
 
+#ifndef MALLOC
+#define MALLOC malloc
+#endif
+
 // begin link
 t_link link_newlink(int size){
 	return link_newnode(size);
 }
 struct linknode * link_newnode(int size){
-	struct linknode * node = (struct linknode *)malloc(size);
+	struct linknode * node = (struct linknode *)MALLOC(size);
 	node->next = NULL;
 	return node;
 }
 struct linknode * link_addnew(t_link link, int size){
-	struct linknode * node = (struct linknode *)malloc(size);
+	struct linknode * node = (struct linknode *)MALLOC(size);
 	node->next = link->next;
 	link->next = node;
 	return node;
@@ -41,7 +45,7 @@ int str_hash(const char *s)
 
 
 char *str_clone(const char *s){
-	char *ns = (char*)malloc(strlen(s)+1);
+	char *ns = (char*)MALLOC(strlen(s)+1);
 	strcpy(ns, s);
 	return ns;
 }
@@ -49,6 +53,37 @@ char *str_clone(const char *s){
 // end string
 
 
+// begin trans
+int btoi(const char *s){
+	int ret = 0;
+	while(*s){
+		ret <<= 1;
+		if(*s == '1')
+			ret |= 0x01;
+		else if(*s != '0')
+			break;
+		++s;
+	}
+	return ret;
+}
+
+int htoi(const char *s){
+	int ret = 0;
+	while(*s){
+		ret <<= 4;
+		if(*s >= '0' && *s <= '9')
+			ret |= (*s)-'0';
+		else if(*s >= 'a' && *s <= 'f')
+			ret |= (*s)-'a' + 10;
+		else if(*s >= 'A' && *s <= 'F')
+			ret |= (*s)-'A' + 10;
+		else
+			break;
+		++s;
+	}
+	return ret;
+}
+// end trans
 
 
 
@@ -67,12 +102,12 @@ struct mapnode * map_put(t_map map, const char *key, void * data){
 }
 struct mapnode * map_get(t_map map, const char *key){
 	struct mapnode * next;
-	link_each(t_map, map, next, printf("%s\n", next->key));
-
 	link_find(t_map, map, next, strcmp(key, next->key)==0);
-
-	
 	return next;
 }
-
+void * map_val(t_map map, const char *key){
+	struct mapnode * next;
+	link_find(t_map, map, next, strcmp(key, next->key)==0);
+	return next != NULL ? next->data : NULL;
+}
 // end map

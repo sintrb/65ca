@@ -6,14 +6,22 @@ Robin 2014-05-05
 #ifndef DEFINE_H
 #define DEFINE_H
 
+#define DEBUG_MODE 1
+
+#define MALLOC(_size) malloc(_size)
+#define FREE(_size) free(_pointer)
+
 #include <stdio.h>
 #include <stdlib.h>
-
-
-// #define DEBUG_MODE 1
+#include <string.h>
+#include "basefuns.h"
+#include "65ca.tab.h"
 
 #define YYINPUT()	yyinput()
 
+// 逻辑
+#define FALSE	0
+#define TRUE	(!FALSE)
 
 #ifdef DEBUG_MODE
 	#define D printf
@@ -21,19 +29,29 @@ Robin 2014-05-05
 	#define D 
 #endif
 
-
+#define YYINPUT()	yyinput()
+#define curlineno yylineno
 extern char *yytext;
+extern int yylineno;
+int yylex();
 void yyerror(const char *err);
 typedef unsigned int t_val;
+typedef unsigned char t_bool;
+
+#define M_ERROR(_fmt, _args...) {fprintf(stderr,"error: %s(%d): ", curfile, curlineno); fprintf(stderr, _fmt, ##_args); destory(); exit(1);}
+
+// begin 数据转换
+// 十六进制字节
+#define M_HEX_BYTE(_h) (htoi(_h) & 0x00ff)
+// 十六进制字
+#define M_HEX_WORD(_h) (htoi(_h) & 0xffff)
+// 二进制字节
+#define M_BIN_BYTE(_b) (btoi(_b) & 0x00ff)
+// 十进制字节
+#define M_OCT_BYTE(_o) (atoi(_o) & 0x00ff)
+
+// end 数据转换
 
 
-
-#define M_ERROR(_s) yyerror(_s)
-
-// trans
-#define M_BETWEEN(_v, _min, _max) ((_v)>=(_min) && (_v)<=(_max))
-#define M_HEXV(_h) (M_BETWEEN(_h,'0','9')?((_h)-'0'):(M_BETWEEN(_h,'a','f')?((_h)-'a'+10):(M_BETWEEN(_h,'A','F')?(_h)-'A'+10:0)))
-#define M_BYTE(_s) (((M_HEXV(*(_s)) & 0x000f)<<4) | (M_HEXV(*((_s)+1)) & 0x000f))
-#define M_WORD(_s) ((M_BYTE(_s)<<8) | (M_BYTE(_s+2)))
 #endif
 
