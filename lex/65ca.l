@@ -180,13 +180,12 @@ ${HEX}{2} {
 	RETTOKEN(CMD_LAB);
 }
 
-
 {IDENTPRE}{IDENTSUF}* {
 	M_SAVEIDENT(yytext);
 	D("IDENT");
 	return token_label(curident);
 }
 
-{NL}+ { return NL; }
+{NL}+ { curlinetype = LINETYPE_NORMAL; return NL; }
 [ \t\n] {}
 %%

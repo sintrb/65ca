@@ -40,6 +40,17 @@ typedef unsigned char t_bool;
 
 #define M_ERROR(_fmt, _args...) {fprintf(stderr,"error: %s(%d): ", curfile, curlineno); fprintf(stderr, _fmt, ##_args); destory(); exit(1);}
 
+
+
+enum linetype
+{
+	LINETYPE_NORMAL, // 正常状态
+};
+
+extern linetype curlinetype;
+
+
+
 // begin 数据转换
 // 十六进制字节
 #define M_HEX_BYTE(_h) (htoi(_h) & 0x00ff)

@@ -18,3 +18,10 @@ lda <$1234
 
 lda >REG
 lda <REG
+
+// 快捷方式创建标签
+REG2 = $2001
+
+lda REG
+sta REG2
+

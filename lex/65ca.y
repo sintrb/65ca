@@ -217,6 +217,19 @@ instruction
 commond
 	: CMD_ORG addr { M_SETCURADDR(CURVAL); }
 	| cmd_lab
+	| cmd_keyval
+;
+
+cmd_keyval
+	: IDENT EQUAL addr {
+		cmd_label(curident, curval, ADDR);
+	}
+	| IDENT EQUAL byte {
+		cmd_label(curident, curval, BYTE);
+	}
+	| IDENT EQUAL zpaddr {
+		cmd_label(curident, curval, ZPADDR);
+	}
 ;
 
 cmd_lab
