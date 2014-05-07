@@ -10,3 +10,10 @@ sta REG
 lda ON
 sta REG
 jmp loop
+
+
+lda >$1234
+lda <$1234
+
+lda >REG
+lda <REG
