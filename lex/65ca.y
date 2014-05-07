@@ -20,7 +20,10 @@
 
 
 // commond
-%token CMD_ORG CMD_LAB
+%token CMD_ORG CMD_LAB CMD_DEFSEG
+
+// defseg
+%token DEFSEG_NAME DEFSEG_SIZE DEFSEG_START DEFSEG_FILL
 
 
 %%
@@ -218,17 +221,26 @@ commond
 	: CMD_ORG addr { M_SETCURADDR(CURVAL); }
 	| cmd_lab
 	| cmd_keyval
+	| cmd_defseg
 ;
 
 cmd_keyval
 	: IDENT EQUAL addr {
-		cmd_label(curident, curval, ADDR);
+		if(curlinetype == LINETYPE_NORMAL)
+			cmd_label(curident, curval, ADDR);
 	}
+
 	| IDENT EQUAL byte {
-		cmd_label(curident, curval, BYTE);
+		if(curlinetype == LINETYPE_NORMAL)
+			cmd_label(curident, curval, BYTE);
+		else if(curlinetype == LINETYPE_DEFSEG){
+			D("   %s == %02x", curident, curval);
+		}
 	}
+
 	| IDENT EQUAL zpaddr {
-		cmd_label(curident, curval, ZPADDR);
+		if(curlinetype == LINETYPE_NORMAL)
+			cmd_label(curident, curval, ZPADDR);
 	}
 ;
 
@@ -242,6 +254,16 @@ cmd_lab
 	| CMD_LAB ZPADDR EQUAL { cmd_label(curident, curval, ZPADDR); }
 	| IDENT COLON { cmd_label(curident, curaddr, ADDR); }
 ;
+
+cmd_defseg
+	: CMD_DEFSEG {
+		D("gen set");
+	}
+	| DEFSEG_NAME EQUAL IDENT {
+
+	}
+;
+
 %%
 
 

@@ -45,6 +45,8 @@ typedef unsigned char t_bool;
 enum linetype
 {
 	LINETYPE_NORMAL, // 正常状态
+	LINETYPE_INSTRUCTION, // 指令
+	LINETYPE_DEFSEG // 定义段
 };
 
 extern linetype curlinetype;

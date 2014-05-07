@@ -96,6 +96,7 @@ yytokentype token_label(const char *name){
 		return IDENT;
 	}
 	else{
+		D("has %s",name);
 		curval = lab->val;
 		return lab->token;
 	}

@@ -1,3 +1,5 @@
+.defseg name=head
+
 .org $8000
 
 .lab REG = $2000 // 直接寻址地址
@@ -25,3 +27,6 @@ REG2 = $2001
 lda REG
 sta REG2
 
+name=4
+
+dsds=name
