@@ -1,29 +1,12 @@
-.org $2000
-lda ($4e, x)
-lda $ed
-lda #$28
-lda $ff55
-lda ($ae), y
+.org $8000
 
-loop:
-lda 212
-lda %00110011
+.lab REG = $2000 // 直接寻址地址
+.lab OFF = #$00 // 立即数寻址
+.lab ON = %00001111 // 立即数寻址，二进制
 
-JMP	(loop)
-
-JMP loop
-
-.lab t = $1234
-.lab td= %11000010
-lda t
-
-lda td
-
-
-.lab tdd= %11000010
-lda 128319823
-
-jsr ttt
-
-.lab ttt=21
-jsr ttt
+loop: // 地址标签
+lda OFF
+sta REG
+lda ON
+sta REG
+jmp loop
