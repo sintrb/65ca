@@ -9,6 +9,7 @@ Robin 2014-05-05
 #include "basefuns.h"
 #include "functions.h"
 #include "label.h"
+#include "instab.h"
 
 
 // t_value curval = 0x00;
@@ -25,6 +26,7 @@ t_map labels = NULL;
 
 
 void init(){
+	instab_init();
 	labels = map_newmap();
 }
 
@@ -72,32 +74,25 @@ t_value cal_readdr(t_value nowaddr, t_value tagaddr){
 }
 
 
-struct label * cmd_label(const char *name, t_value val, yytokentype token){
-	struct mapnode * node = map_get(labels, name);
+struct label * cmd_label(struct valobj *nval, struct valobj *val){
+	struct mapnode * node = NULL;
 	struct label *lab = NULL;
-	// D("cmd_label(%s) ", name);
-	if(node){
+	if(!nval->name){
+		M_ERROR("sys err");
+	}
+	else if(nval->status == VALOBJ_STATUS_KNOWN){
+		// already define
+		node = map_get(labels, nval->name);
 		lab = (struct label *)node->data;
-		M_ERROR("label \"%s\" defined at %s(%d)", name, lab->filepos.filename, lab->filepos.lineno);
+		D("OO");
+		M_ERROR("label \"%s\" defined at %s(%d)", lab->name, lab->filepos.filename, lab->filepos.lineno);
 	}
 	else{
 		lab = label_new();
-		lab->name = str_clone(name);
-		lab->token = token;
-		lab->val = val;
-		node = map_put(labels, name, lab);
-	}
-}
-
-
-yytokentype token_label(const char *name){
-	struct label * lab = (struct label *) map_val(labels, name);
-	if(!lab){
-		return IDENT;
-	}
-	else{
-		D("has %s",name);
-		return lab->token;
+		lab->name = str_clone(nval->name);
+		lab->filepos = filepos_curpos();
+		valobj_retain(val);
+		node = map_put(labels, lab->name, lab);
 	}
 }
 
@@ -108,6 +103,47 @@ struct filepos filepos_curpos(){
 	return pos;
 }
 
+void ins_compile(t_token ins, struct valobj *val){
+	struct insobj * io = NULL;
+	if(val && val->status != VALOBJ_STATUS_KNOWN){
+		M_ERROR("unknown name:%s", val->name?val->name:"");
+	}
+	io = instab_get(ins, !val? NONE: val->token);
+	if(!io && val->token == ADDR)
+		io = instab_get(ins, READDR);
+	if(!io){
+		M_ERROR("sys error ins:%d", ins);
+	}
+	switch(io->addr){
+		case NONE:{
+			M_WRITE_CMD(io->code);
+			break;
+		}
+		case NUM:
+		case ZPADDR:
+		case XZPADDR:
+		case YZPADDR:
+		case XIDIRADDR:
+		case YIDIRADDR:{
+			M_WRITE_BYTE(io->code, val->value);
+			break;
+		}
+		case ADDR:
+		case XADDR:
+		case YADDR:
+		case IDIRADDR:{
+			M_WRITE_WORD(io->code, val->value);
+			break;
+		}
+		case READDR:{
+			M_WRITE_REL(io->code, val->value);
+			break;
+		}
+		default:{
+			M_ERROR("unknow addr(%d)", io->addr);
+		}
+	}
+}
 
 
 

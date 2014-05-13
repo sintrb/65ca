@@ -21,10 +21,10 @@ extern char curident[256];
 
 #define M_SETCURADDR(_addr)	curaddr = _addr;
 
-#define M_WRITE_CMD(_cmd) writeout(_cmd);;
-#define M_WRITE_BYTE(_cmd) M_WRITE_CMD(_cmd);writeout(curval);
-#define M_WRITE_WORD(_cmd) M_WRITE_CMD(_cmd);writeout(curval);writeout(curval>>8);
-#define M_WRITE_REL(_cmd) M_WRITE_CMD(_cmd);writeout(cal_readdr(CURADDR,CURVAL));
+#define M_WRITE_CMD(_cmd) writeout(_cmd);
+#define M_WRITE_BYTE(_cmd, _val) M_WRITE_CMD(_cmd);writeout(_val);
+#define M_WRITE_WORD(_cmd, _val) M_WRITE_CMD(_cmd);writeout(_val);writeout((_val)>>8);
+#define M_WRITE_REL(_cmd, _val) M_WRITE_CMD(_cmd);writeout(cal_readdr(CURADDR,_val));
 
 // begin 编译器
 
@@ -55,7 +55,7 @@ t_value cal_readdr(t_value nowaddr, t_value tagaddr);
 // begin 内部命令(.xx)
 
 // 添加标签
-struct label * cmd_label(const char *name, t_value val, yytokentype token);
+struct label * cmd_label(struct valobj *nval, struct valobj *val);
 
 // end 内部命令
 
@@ -74,7 +74,8 @@ struct filepos
 struct filepos filepos_curpos();
 // end 文件位置
 
-
+// 编译指令token为ins，值为val的代码行
+void ins_compile(t_token ins, struct valobj *val);
 
 
 

@@ -4,6 +4,7 @@
 #include "functions.h"
 #include "instructions.h"
 #include "65ca.tab.h"
+#include "instab.h"
 
 #define COMPILEINS(_ins, _type)	D(#_ins)
 
@@ -24,7 +25,7 @@
 %token IDENT
 
 // address
-%token NUM 200 ZPADDR 201 ADDR 202 XADDR 203 YADDR 204 XZPADDR 205 YZPADDR 206 IDIRADDR 207 XIDIRADDR 208 YIDIRADDR 209 READDR 210
+%token NONE 200 NUM 201 ZPADDR 202 ADDR 203 XADDR 204 YADDR 205 XZPADDR 206 YZPADDR 207 IDIRADDR 208 XIDIRADDR 209 YIDIRADDR 210 READDR 211
 
 // NUM
 %token BIN HEX OCT
@@ -36,7 +37,7 @@
 %token X Y NL L_BRACE R_BRACE L_BRACKET R_BRACKET L_PARENTHESIS R_PARENTHESIS L_ANGLE R_ANGLE COMMA COLON SEMICOLON EQUAL POUND DOLLAR
 
 
-// commond
+// command
 %token CMD_ORG CMD_LAB CMD_DEFSEG
 
 // defseg
@@ -61,85 +62,19 @@ lines
 
 line
 	: instruction
+	| command
 	| NL {
 		D("\n");
 	}
 ;
 
-
-ident
-	: ADDR {
-		$$ = valobj_new(ADDR, htoi(yytext+1));
-	}
-	| ZPADDR {
-		$$ = valobj_new(ZPADDR, htoi(yytext+1));
-	}
-	| HEX {
-		$$ = valobj_new(NUM, htoi(yytext+2));
-	}
-	| BIN {
-		$$ = valobj_new(NUM, btoi(yytext+1));
-	}
-	| OCT {
-		$$ = valobj_new(NUM, atoi(yytext));
-	}
-	| ident ADD ident {
-		$$ = $1;
-		$$->value = $1->value + $3->value;
-		valobj_del($3);
-	}
-	| ident SUB ident {
-		$$ = $1;
-		$$->value = $1->value - $3->value;
-		valobj_del($3);
-	}
-	| ident MUL ident {
-		$$ = $1;
-		$$->value = $1->value * $3->value;
-		valobj_del($3);
-	}
-	| ident DIV ident {
-		$$ = $1;
-		$$->value = $1->value / $3->value;
-		valobj_del($3);
-	}
-	| L_BRACE ident R_BRACE {
-		$$ = $2;
-	}
-;
-
-addr
-	: ident {
-		$$ = $1;
-	}
-	| ident COMMA X {
-		$$ = $1;
-		$$->token = XADDR;
-	}
-	| ident COMMA Y {
-		$$ = $1;
-		$$->token = YADDR;
-	}
-	| L_PARENTHESIS ident R_PARENTHESIS {
-		$$ = $2;
-		$$->token = IDIRADDR;
-	}
-	| L_PARENTHESIS ident COMMA X R_PARENTHESIS {
-		$$ = $2;
-		$$->token = XIDIRADDR;
-	}
-	| L_PARENTHESIS ident R_PARENTHESIS COMMA Y {
-		$$ = $2;
-		$$->token = YIDIRADDR;
-	}
-;
-
 instruction
 	: ins addr {
-		D(" --%04x(%d)\n", $2->value, $2->token);
+		ins_compile($1, $2);
+		valobj_release($2);
 	}
 	| ins {
-
+		ins_compile($1, NULL);
 	}
 ;
 
@@ -201,6 +136,112 @@ ins
 	| NOP { $$ = NOP; }
 	| RTI { $$ = RTI; }
 	| BRK { $$ = BRK; }
+;
+
+addr
+	: ident {
+		$$ = $1;
+		// D("----");
+	}
+	| ident COMMA X {
+		$$ = $1;
+		if($$->token == ZPADDR){
+			$$->token = XZPADDR;
+			D("--XZPADDR--");
+		}
+		else{
+			$$->token = XADDR;
+			D("--XADDR--");
+		}
+	}
+	| ident COMMA Y {
+		$$ = $1;
+		if($$->token == ZPADDR){
+			$$->token = YZPADDR;
+			D("--YZPADDR--");
+		}
+		else{
+			$$->token = YADDR;
+			D("--YADDR--");
+		}
+	}
+	| L_PARENTHESIS ident R_PARENTHESIS {
+		$$ = $2;
+		$$->token = IDIRADDR;
+		D("--IDIRADDR--");
+	}
+	| L_PARENTHESIS ident COMMA X R_PARENTHESIS {
+		$$ = $2;
+		$$->token = XIDIRADDR;
+		D("--XIDIRADDR--");
+	}
+	| L_PARENTHESIS ident R_PARENTHESIS COMMA Y {
+		$$ = $2;
+		$$->token = YIDIRADDR;
+		D("--YIDIRADDR--");
+	}
+;
+
+ident
+	: ADDR {
+		$$ = valobj_new(ADDR, htoi(yytext+1));
+	}
+	| ZPADDR {
+		$$ = valobj_new(ZPADDR, htoi(yytext+1));
+	}
+	| HEX {
+		$$ = valobj_new(NUM, htoi(yytext+2));
+	}
+	| BIN {
+		$$ = valobj_new(NUM, btoi(yytext+1));
+	}
+	| OCT {
+		$$ = valobj_new(NUM, atoi(yytext));
+	}
+	| IDENT {
+		$$ = valobj_new(NUM, 0);
+		$$->status = VALOBJ_STATUS_UNKNOWN;
+		$$->name = str_clone(yytext);
+	}
+	| ident ADD ident {
+		$$ = $1;
+		$$->value = $1->value + $3->value;
+		valobj_release($3);
+	}
+	| ident SUB ident {
+		$$ = $1;
+		$$->value = $1->value - $3->value;
+		valobj_release($3);
+	}
+	| ident MUL ident {
+		$$ = $1;
+		$$->value = $1->value * $3->value;
+		valobj_release($3);
+	}
+	| ident DIV ident {
+		$$ = $1;
+		$$->value = $1->value / $3->value;
+		valobj_release($3);
+	}
+	| L_BRACE ident R_BRACE {
+		$$ = $2;
+	}
+;
+
+command
+	: CMD_ORG ident {
+		M_SETCURADDR($2->value);
+	}
+	| ident EQUAL ident {
+		D("%s==%d", $1->name, $3->value);
+		valobj_info($1);
+		valobj_info($3);
+		cmd_label($1, $3);
+		valobj_release($1);
+		valobj_release($3);
+		// valobj_info($1);
+		valobj_info($3);
+	}
 ;
 
 %%

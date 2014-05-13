@@ -14,9 +14,7 @@ enum labelstatus {
 struct label
 {
 	char *name;
-	t_value val;
-	labelstatus status;
-	yytokentype token;
+	struct valobj *val;
 	struct filepos filepos;
 	t_link tasks;
 };
