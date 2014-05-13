@@ -10,12 +10,12 @@ Robin 2014-05-05
 #include "define.h"
 #include "basefuns.h"
 
-extern t_val curval;
-extern t_val curaddr;
+// extern t_value curval;
+extern t_value curaddr;
 extern char * curfile;
 extern char curident[256];
 
-#define CURVAL	curval
+// #define CURVAL	curval
 #define CURADDR	curaddr
 #define M_SAVEIDENT(_s) strncpy(curident, _s, sizeof(curident))
 
@@ -39,7 +39,7 @@ void destory();
 // 输出
 
 // 输出单字节
-void writeout(t_val v);
+void writeout(t_value v);
 
 // end 输出
 
@@ -47,7 +47,7 @@ void writeout(t_val v);
 
 // 计算相对偏移值
 // 超出范围时报错
-t_val cal_readdr(t_val nowaddr, t_val tagaddr);
+t_value cal_readdr(t_value nowaddr, t_value tagaddr);
 
 
 // end 计算
@@ -55,7 +55,7 @@ t_val cal_readdr(t_val nowaddr, t_val tagaddr);
 // begin 内部命令(.xx)
 
 // 添加标签
-struct label * cmd_label(const char *name, t_val val, yytokentype token);
+struct label * cmd_label(const char *name, t_value val, yytokentype token);
 
 // end 内部命令
 

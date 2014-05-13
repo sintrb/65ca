@@ -11,8 +11,8 @@ Robin 2014-05-05
 #include "label.h"
 
 
-t_val curval = 0x00;
-t_val curaddr = 0x0000;
+// t_value curval = 0x00;
+t_value curaddr = 0x0000;
 char * curfile = "test.asm";
 char curident[256];
 
@@ -36,7 +36,7 @@ void destory(){
 }
 
 
-void writeout(t_val v){
+void writeout(t_value v){
 	unsigned char buf[1];
 	v &= 0x00ff;
 	if(!fp){
@@ -58,8 +58,8 @@ void writeout(t_val v){
 
 
 
-t_val cal_readdr(t_val nowaddr, t_val tagaddr){
-	t_val bt;
+t_value cal_readdr(t_value nowaddr, t_value tagaddr){
+	t_value bt;
 	if(tagaddr > nowaddr && (tagaddr - nowaddr) <= 256){
 		bt = tagaddr - nowaddr - 1;
 	}
@@ -72,7 +72,7 @@ t_val cal_readdr(t_val nowaddr, t_val tagaddr){
 }
 
 
-struct label * cmd_label(const char *name, t_val val, yytokentype token){
+struct label * cmd_label(const char *name, t_value val, yytokentype token){
 	struct mapnode * node = map_get(labels, name);
 	struct label *lab = NULL;
 	// D("cmd_label(%s) ", name);
@@ -97,7 +97,6 @@ yytokentype token_label(const char *name){
 	}
 	else{
 		D("has %s",name);
-		curval = lab->val;
 		return lab->token;
 	}
 }

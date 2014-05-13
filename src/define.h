@@ -8,8 +8,13 @@ Robin 2014-05-05
 
 #define DEBUG_MODE 1
 
+
+
 #define MALLOC(_size) malloc(_size)
 #define FREE(_size) free(_pointer)
+
+typedef unsigned int t_value;
+typedef unsigned char t_bool;
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -35,8 +40,6 @@ extern char *yytext;
 extern int yylineno;
 int yylex();
 void yyerror(const char *err);
-typedef unsigned int t_val;
-typedef unsigned char t_bool;
 
 #define M_ERROR(_fmt, _args...) {fprintf(stderr,"error: %s(%d): ", curfile, curlineno); fprintf(stderr, _fmt, ##_args); destory(); exit(1);}
 
@@ -50,20 +53,21 @@ enum linetype
 };
 
 extern linetype curlinetype;
+typedef yytokentype t_token;
+
+// 值类型
+struct valobj
+{
+	t_value value;
+	t_token token;
+};
+
+typedef struct valobj t_valobj;
 
 
 
-// begin 数据转换
-// 十六进制字节
-#define M_HEX_BYTE(_h) (htoi(_h) & 0x00ff)
-// 十六进制字
-#define M_HEX_WORD(_h) (htoi(_h) & 0xffff)
-// 二进制字节
-#define M_BIN_BYTE(_b) (btoi(_b) & 0x00ff)
-// 十进制字节
-#define M_OCT_BYTE(_o) (atoi(_o) & 0x00ff)
-
-// end 数据转换
+#define valobj_del(_vo) free(_vo);_vo=NULL;
+struct valobj *valobj_new(t_token tk, t_value val);
 
 
 #endif

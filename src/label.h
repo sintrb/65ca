@@ -14,7 +14,7 @@ enum labelstatus {
 struct label
 {
 	char *name;
-	t_val val;
+	t_value val;
 	labelstatus status;
 	yytokentype token;
 	struct filepos filepos;
