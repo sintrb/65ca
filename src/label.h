@@ -19,7 +19,11 @@ struct label
 	t_link tasks;
 };
 
+extern t_map labels;
 
 // 创建新标签
 struct label * label_new();
+
+// 获取标签
+struct label * label_get(const char *name, t_bool autoadd);
 

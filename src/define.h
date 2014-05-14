@@ -71,11 +71,10 @@ struct valobj
 typedef struct valobj t_valobj;
 
 
-#define valobj_info(_vo) if((_vo)->name)D("(%s ref:%d)",(_vo)->name, (_vo)->refcount);
+#define valobj_info(_vo) D("(ref:%d)",(_vo)->refcount);
 #define valobj_del(_vo) {D("free");valobj_info(_vo); if((_vo)->name)FREE((_vo)->name);FREE(_vo);(_vo)=NULL;}
 #define valobj_retain(_vo) {D("retain");valobj_info(_vo);++((_vo)->refcount);}
 #define valobj_release(_vo) {D("release");valobj_info(_vo);--((_vo)->refcount); if(!((_vo)->refcount))valobj_del(_vo);}
-struct valobj *valobj_new(t_token tk, t_value val);
 struct valobj *valobj_new(t_token tk, t_value val);
 
 #endif

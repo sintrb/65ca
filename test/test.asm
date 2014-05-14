@@ -1,6 +1,8 @@
 .org $0010
 
-val = #$00
 
+start:
+
+jmp start
 
 

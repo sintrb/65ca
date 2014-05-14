@@ -22,8 +22,6 @@ FILE *fp = NULL;
 const char *ofile = "output.bin";
 
 
-t_map labels = NULL;
-
 
 void init(){
 	instab_init();
@@ -74,25 +72,28 @@ t_value cal_readdr(t_value nowaddr, t_value tagaddr){
 }
 
 
-struct label * cmd_label(struct valobj *nval, struct valobj *val){
-	struct mapnode * node = NULL;
+struct label * cmd_label(const char *name, struct valobj *val){
+	struct mapnode * node = map_get(labels, name);
 	struct label *lab = NULL;
-	if(!nval->name){
-		M_ERROR("sys err");
-	}
-	else if(nval->status == VALOBJ_STATUS_KNOWN){
+	if(node){
 		// already define
-		node = map_get(labels, nval->name);
 		lab = (struct label *)node->data;
-		D("OO");
 		M_ERROR("label \"%s\" defined at %s(%d)", lab->name, lab->filepos.filename, lab->filepos.lineno);
 	}
 	else{
+		if(!val){
+			// lab:
+			// address label
+			val = valobj_new(ADDR, CURADDR);
+		}
+		else{
+			valobj_retain(val);
+		}
 		lab = label_new();
-		lab->name = str_clone(nval->name);
+		lab->val = val;
+		lab->name = str_clone(name);
 		lab->filepos = filepos_curpos();
-		valobj_retain(val);
-		node = map_put(labels, lab->name, lab);
+		node = map_put(labels, name, lab);
 	}
 }
 

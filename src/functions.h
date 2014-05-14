@@ -17,7 +17,7 @@ extern char curident[256];
 
 // #define CURVAL	curval
 #define CURADDR	curaddr
-#define M_SAVEIDENT(_s) strncpy(curident, _s, sizeof(curident))
+
 
 #define M_SETCURADDR(_addr)	curaddr = _addr;
 
@@ -55,7 +55,7 @@ t_value cal_readdr(t_value nowaddr, t_value tagaddr);
 // begin 内部命令(.xx)
 
 // 添加标签
-struct label * cmd_label(struct valobj *nval, struct valobj *val);
+struct label * cmd_label(const char *name, struct valobj *val);
 
 // end 内部命令
 

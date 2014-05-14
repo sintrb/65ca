@@ -1,10 +1,11 @@
-
+%expect 1
 %{
 #include "define.h"
 #include "functions.h"
 #include "instructions.h"
 #include "65ca.tab.h"
 #include "instab.h"
+#include "label.h"
 
 #define COMPILEINS(_ins, _type)	D(#_ins)
 
@@ -13,7 +14,7 @@
 %union{
 	struct valobj *val;
 	yytokentype token;
-	char * identname;
+	char * name;
 }
 
 
@@ -45,13 +46,17 @@
 
 // cal
 %token ADD SUB DIV MUL
+
+%start lines
+
 %left ADD SUB
 %left MUL DIV
 %right DOLLAR
 %right POUND
-
+%right EQUAL
 
 %type <val> ident addr
+%type <name> iname
 %type <token> ins
 %%
 
@@ -61,8 +66,8 @@ lines
 ;
 
 line
-	: instruction
-	| command
+	: command
+	| instruction
 	| NL {
 		D("\n");
 	}
@@ -198,10 +203,10 @@ ident
 	| OCT {
 		$$ = valobj_new(NUM, atoi(yytext));
 	}
-	| IDENT {
-		$$ = valobj_new(NUM, 0);
-		$$->status = VALOBJ_STATUS_UNKNOWN;
-		$$->name = str_clone(yytext);
+	| iname {
+		$$ = label_get($1, true)->val;
+		valobj_retain($$);
+		FREE($1);
 	}
 	| ident ADD ident {
 		$$ = $1;
@@ -228,19 +233,42 @@ ident
 	}
 ;
 
+iname
+	: IDENT {
+		$$ = str_clone(yytext);
+	}
+;
+
 command
 	: CMD_ORG ident {
+		// .org $0000
 		M_SETCURADDR($2->value);
 	}
-	| ident EQUAL ident {
-		D("%s==%d", $1->name, $3->value);
-		valobj_info($1);
+	| cmdlabel
+;
+
+
+cmdlabel
+	: CMD_LAB iname EQUAL ident {
+		// .lab lab=value
+		valobj_info($4);
+		cmd_label($2, $4);
+		valobj_release($4);
+		valobj_info($4);
+		FREE($2);
+	}
+	| iname EQUAL ident {
+		// lab=value
 		valobj_info($3);
 		cmd_label($1, $3);
-		valobj_release($1);
 		valobj_release($3);
-		// valobj_info($1);
 		valobj_info($3);
+		FREE($1);
+	}
+	| iname COLON {
+		// lab:
+		cmd_label($1, NULL);
+		FREE($1);
 	}
 ;
 
