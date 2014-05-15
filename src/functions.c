@@ -75,25 +75,39 @@ t_value cal_readdr(t_value nowaddr, t_value tagaddr){
 struct label * cmd_label(const char *name, struct valobj *val){
 	struct mapnode * node = map_get(labels, name);
 	struct label *lab = NULL;
+	struct valobj *newval = NULL;
 	if(node){
 		// already define
 		lab = (struct label *)node->data;
-		M_ERROR("label \"%s\" defined at %s(%d)", lab->name, lab->filepos.filename, lab->filepos.lineno);
+		if(lab->status == LABEL_STATUS_KNOWN){
+			M_ERROR("label \"%s\" defined at %s(%d)", lab->name, lab->filepos.filename, lab->filepos.lineno);
+		}
+		else{
+			lab->filepos = filepos_curpos();
+			lab->status = LABEL_STATUS_KNOWN;
+			// TODO: process tasks
+			D("TASK(%s)",lab->name);
+		}
 	}
 	else{
 		if(!val){
 			// lab:
 			// address label
-			val = valobj_new(ADDR, CURADDR);
+			newval = label_newval(ADDR, CURADDR);
 		}
 		else{
-			valobj_retain(val);
+			newval = label_newval(val->token, val->value);
 		}
+		
 		lab = label_new();
-		lab->val = val;
+		lab->val = newval;
 		lab->name = str_clone(name);
 		lab->filepos = filepos_curpos();
+
+		newval->label = lab;
+
 		node = map_put(labels, name, lab);
+		return lab;
 	}
 }
 
@@ -106,12 +120,19 @@ struct filepos filepos_curpos(){
 
 void ins_compile(t_token ins, struct valobj *val){
 	struct insobj * io = NULL;
-	if(val && val->status != VALOBJ_STATUS_KNOWN){
-		M_ERROR("unknown name:%s", val->name?val->name:"");
+	if(val && val && val->label && val->label->status != LABEL_STATUS_KNOWN){
+		if(val->token == ADDR){
+			// add task
+			D("PRE(%s)", val->label->name);
+		}
+		else{
+			M_ERROR("unknown name:%s", val->label->name);
+		}
 	}
 	io = instab_get(ins, !val? NONE: val->token);
-	if(!io && val->token == ADDR)
+	if(!io && val && val->token == ADDR){
 		io = instab_get(ins, READDR);
+	}
 	if(!io){
 		M_ERROR("sys error ins:%d", ins);
 	}

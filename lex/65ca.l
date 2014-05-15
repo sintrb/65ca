@@ -152,7 +152,6 @@ ${HEX}{2} {
 "*" { RETTOKEN(MUL); }
 "/" { RETTOKEN(DIV); }
 
-
 "X" { RETTOKEN(X); }
 "Y" { RETTOKEN(Y); }
 
@@ -165,6 +164,11 @@ ${HEX}{2} {
 \.LAB|LABEL {
 	RETTOKEN(CMD_LAB);
 }
+
+\.INFO {
+	RETTOKEN(CMD_INFO);
+}
+
 
 \.DEFSEG|DEFINESEGMENT {
 	curlinetype = LINETYPE_DEFSEG;

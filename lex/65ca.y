@@ -7,7 +7,7 @@
 #include "instab.h"
 #include "label.h"
 
-#define COMPILEINS(_ins, _type)	D(#_ins)
+#define CHECKVO(_vo) {if((_vo)->label && (_vo)->label->status!=LABEL_STATUS_KNOWN){M_ERROR("unknow name:%s", (_vo)->label->name);}}
 
 %}
 
@@ -39,7 +39,7 @@
 
 
 // command
-%token CMD_ORG CMD_LAB CMD_DEFSEG
+%token CMD_ORG CMD_LAB CMD_DEFSEG CMD_INFO
 
 // defseg
 %token DEFSEG_NAME DEFSEG_SIZE DEFSEG_START DEFSEG_FILL
@@ -189,19 +189,19 @@ addr
 
 ident
 	: ADDR {
-		$$ = valobj_new(ADDR, htoi(yytext+1));
+		$$ = label_newval(ADDR, htoi(yytext+1));
 	}
 	| ZPADDR {
-		$$ = valobj_new(ZPADDR, htoi(yytext+1));
+		$$ = label_newval(ZPADDR, htoi(yytext+1));
 	}
 	| HEX {
-		$$ = valobj_new(NUM, htoi(yytext+2));
+		$$ = label_newval(NUM, htoi(yytext+2));
 	}
 	| BIN {
-		$$ = valobj_new(NUM, btoi(yytext+1));
+		$$ = label_newval(NUM, btoi(yytext+1));
 	}
 	| OCT {
-		$$ = valobj_new(NUM, atoi(yytext));
+		$$ = label_newval(NUM, atoi(yytext));
 	}
 	| iname {
 		$$ = label_get($1, true)->val;
@@ -209,23 +209,31 @@ ident
 		FREE($1);
 	}
 	| ident ADD ident {
-		$$ = $1;
-		$$->value = $1->value + $3->value;
+		CHECKVO($1);
+		CHECKVO($3);
+		$$ = label_newval($1->token, $1->value + $3->value);
+		valobj_release($1);
 		valobj_release($3);
 	}
 	| ident SUB ident {
-		$$ = $1;
-		$$->value = $1->value - $3->value;
+		CHECKVO($1);
+		CHECKVO($3);
+		$$ = label_newval($1->token, $1->value - $3->value);
+		valobj_release($1);
 		valobj_release($3);
 	}
 	| ident MUL ident {
-		$$ = $1;
-		$$->value = $1->value * $3->value;
+		CHECKVO($1);
+		CHECKVO($3);
+		$$ = label_newval($1->token, $1->value * $3->value);
+		valobj_release($1);
 		valobj_release($3);
 	}
 	| ident DIV ident {
-		$$ = $1;
-		$$->value = $1->value / $3->value;
+		CHECKVO($1);
+		CHECKVO($3);
+		$$ = label_newval($1->token, $1->value / $3->value);
+		valobj_release($1);
 		valobj_release($3);
 	}
 	| L_BRACE ident R_BRACE {
@@ -251,24 +259,23 @@ command
 cmdlabel
 	: CMD_LAB iname EQUAL ident {
 		// .lab lab=value
-		valobj_info($4);
 		cmd_label($2, $4);
 		valobj_release($4);
-		valobj_info($4);
 		FREE($2);
 	}
 	| iname EQUAL ident {
 		// lab=value
-		valobj_info($3);
 		cmd_label($1, $3);
 		valobj_release($3);
-		valobj_info($3);
 		FREE($1);
 	}
 	| iname COLON {
 		// lab:
 		cmd_label($1, NULL);
 		FREE($1);
+	}
+	| CMD_INFO iname {
+		label_detail((label_get($2, true)));
 	}
 ;
 

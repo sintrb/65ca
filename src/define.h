@@ -54,28 +54,7 @@ extern linetype curlinetype;
 typedef yytokentype t_token;
 typedef unsigned int t_refcount;
 
-#define VALOBJ_STATUS_UNKNOWN	0
-#define VALOBJ_STATUS_KNOWN		1
-
-// 值类型
-struct valobj
-{
-	t_value value;
-	t_token token;
-	t_refcount refcount;
-	char status;
-	char * name;
-	struct label * label;
-};
-
-typedef struct valobj t_valobj;
-
-
-#define valobj_info(_vo) D("(ref:%d)",(_vo)->refcount);
-#define valobj_del(_vo) {D("free");valobj_info(_vo); if((_vo)->name)FREE((_vo)->name);FREE(_vo);(_vo)=NULL;}
-#define valobj_retain(_vo) {D("retain");valobj_info(_vo);++((_vo)->refcount);}
-#define valobj_release(_vo) {D("release");valobj_info(_vo);--((_vo)->refcount); if(!((_vo)->refcount))valobj_del(_vo);}
-struct valobj *valobj_new(t_token tk, t_value val);
+#define MARK()	D("%s: %d", __FILE__, __LINE__)
 
 #endif
 
