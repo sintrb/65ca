@@ -174,6 +174,43 @@ ${HEX}{2} {
 	curlinetype = LINETYPE_DEFSEG;
 	RETTOKEN(CMD_DEFSEG);
 }
+name {
+	if(curlinetype == LINETYPE_DEFSEG){
+		RETTOKEN(CMD_DEFSEG_NAME);
+	}
+	else{
+		RETTOKEN(IDENT);
+	}
+}
+start {
+	if(curlinetype == LINETYPE_DEFSEG){
+		RETTOKEN(CMD_DEFSEG_START);
+	}
+	else{
+		RETTOKEN(IDENT);
+	}
+}
+size {
+	if(curlinetype == LINETYPE_DEFSEG){
+		RETTOKEN(CMD_DEFSEG_SIZE);
+	}
+	else{
+		RETTOKEN(IDENT);
+	}
+}
+fill {
+	if(curlinetype == LINETYPE_DEFSEG){
+		RETTOKEN(CMD_DEFSEG_FILL);
+	}
+	else{
+		RETTOKEN(IDENT);
+	}
+}
+
+
+\"[^\"]*\" {
+	// RETTOKEN(STR);
+}
 
 {IDENTPRE}{IDENTSUF}* {
 	RETTOKEN(IDENT);

@@ -10,6 +10,7 @@ Robin 2014-05-05
 #include "functions.h"
 #include "label.h"
 #include "instab.h"
+#include "segment.h"
 
 
 // t_value curval = 0x00;

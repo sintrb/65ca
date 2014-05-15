@@ -1,4 +1,4 @@
-%expect 1
+
 %{
 #include "define.h"
 #include "functions.h"
@@ -6,7 +6,8 @@
 #include "65ca.tab.h"
 #include "instab.h"
 #include "label.h"
-
+#include "segment.h"
+// %expect 1
 #define CHECKVO(_vo) {if((_vo)->label && (_vo)->label->status!=LABEL_STATUS_KNOWN){M_ERROR("unknow name:%s", (_vo)->label->name);}}
 
 %}
@@ -42,7 +43,7 @@
 %token CMD_ORG CMD_LAB CMD_DEFSEG CMD_INFO
 
 // defseg
-%token DEFSEG_NAME DEFSEG_SIZE DEFSEG_START DEFSEG_FILL
+%token CMD_DEFSEG_NAME CMD_DEFSEG_START CMD_DEFSEG_SIZE CMD_DEFSEG_FILL
 
 // cal
 %token ADD SUB DIV MUL
@@ -253,6 +254,7 @@ command
 		M_SETCURADDR($2->value);
 	}
 	| cmdlabel
+	| cmd_segdef
 ;
 
 
@@ -265,7 +267,12 @@ cmdlabel
 	}
 	| iname EQUAL ident {
 		// lab=value
-		cmd_label($1, $3);
+		if(curlinetype = LINETYPE_NORMAL){
+			cmd_label($1, $3);
+		}
+		else{
+			M_ERROR("unknow key: %s", $1);
+		}
 		valobj_release($3);
 		FREE($1);
 	}
@@ -279,6 +286,28 @@ cmdlabel
 	}
 ;
 
+cmd_segdef
+	: CMD_DEFSEG {
+		curdefseg = segment_new();
+	}
+	| CMD_DEFSEG_NAME EQUAL iname {
+		curdefseg->name = $3;
+	}
+	| CMD_DEFSEG_START EQUAL ident {
+		CHECKVO($3);
+		curdefseg->start = $3->value;
+		valobj_release($3);
+	}
+	| CMD_DEFSEG_SIZE EQUAL ident {
+		CHECKVO($3);
+		curdefseg->size = $3->value;
+		valobj_release($3);
+	}
+	| CMD_DEFSEG_FILL EQUAL ident {
+		CHECKVO($3);
+		curdefseg->fill = $3->value;
+		valobj_release($3);
+	}
 %%
 
 
