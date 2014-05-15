@@ -14,7 +14,7 @@
 
 %union{
 	struct valobj *val;
-	yytokentype token;
+	enum yytokentype token;
 	char * name;
 }
 

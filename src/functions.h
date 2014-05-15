@@ -60,7 +60,7 @@ struct label * cmd_label(const char *name, struct valobj *val);
 // end 内部命令
 
 // begin 标签处理
-yytokentype token_label(const char *name);
+t_token token_label(const char *name);
 // end 表情处理
 
 // begin 文件位置

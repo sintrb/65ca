@@ -25,6 +25,7 @@ NL [;\n\r]
 %%
 
 "/*" {
+	/*
 	int c1=0, c2=0;
 	for(;;) {
 		c2 = YYINPUT();
@@ -34,9 +35,11 @@ NL [;\n\r]
 			break;
 		c1 = c2;
 	}
+	*/
 }
 
 "//" {
+	/*
 	int c = 0;
 	while(c != '\n' && c != EOF)
 		c = YYINPUT();
@@ -44,6 +47,7 @@ NL [;\n\r]
 		if(c == '\n')
 			D("\n");
 	#endif
+	*/
 }
 
 

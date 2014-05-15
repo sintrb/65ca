@@ -21,7 +21,8 @@ typedef unsigned char t_bool;
 #include "basefuns.h"
 #include "65ca.tab.h"
 // #include "label.h"
-#define YYINPUT()	yyinput()
+
+//#define YYINPUT()	YY_INPUT()
 
 // 逻辑
 #define FALSE	0
@@ -33,7 +34,14 @@ typedef unsigned char t_bool;
 	#define D 
 #endif
 
-#define YYINPUT()	yyinput()
+#ifndef true
+#define true 1
+#endif
+
+#ifndef false
+#define false 0
+#endif
+
 #define curlineno yylineno
 extern char *yytext;
 extern int yylineno;
@@ -50,8 +58,8 @@ enum linetype
 	LINETYPE_DEFSEG // 定义段
 };
 
-extern linetype curlinetype;
-typedef yytokentype t_token;
+extern enum linetype curlinetype;
+typedef enum yytokentype t_token;
 typedef unsigned int t_refcount;
 
 #define MARK()	D("%s: %d", __FILE__, __LINE__)

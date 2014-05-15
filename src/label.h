@@ -39,7 +39,7 @@ struct label
 	struct valobj *val;
 	struct filepos filepos;
 	t_link tasks;
-	labelstatus status;
+	enum labelstatus status;
 };
 
 extern t_map labels;
