@@ -175,9 +175,15 @@ void cmd_end_defseg(){
 	if(node){
 		M_ERROR("segment \"%s\" defined at %s(%d)", curdefseg->name, curdefseg->filepos.filename, curdefseg->filepos.lineno);
 	}
+	// data
 	curdefseg->data = (unsigned char*)MALLOC(curdefseg->size);
 	for(i=0; i<curdefseg->size; ++i){
 		curdefseg->data[i] = curdefseg->fill;
+	}
+	// flag
+	curdefseg->flag = (unsigned char*)MALLOC(curdefseg->size);
+	for(i=0; i<curdefseg->size; ++i){
+		curdefseg->flag[i] = 0;
 	}
 	node = map_put(segments, curdefseg->name, curdefseg);
 	if(curseg==NULL){

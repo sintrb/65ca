@@ -1,16 +1,17 @@
+.DEFINESEGMENT name=CODE size=128    fill=#$00   start=$8000
 
 
 
 
-.defseg name=CODE size=1024*4 fill=#$FF start=$8000
+lda #$12
+
+.org $8010
+
+ldx #$21
 
 
-lda #$11
-lda #$11
-lda #$11
-lda #$11
-lda #$11
-lda #$11
+
+
 
 
 .info CODE

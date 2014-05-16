@@ -54,5 +54,5 @@ struct label * label_get(const char *name, t_bool autoadd){
 }
 
 void label_detail(struct label * lab){
-	D("{%s:%04x ref:%d kwn:%c}", lab->name, lab->val->value, lab->val->refcount, lab->status == LABEL_STATUS_KNOWN?'Y':'N');
+	O("{%s v:%04x ref:%d kwn:%c}", lab->name, lab->val->value, lab->val->refcount, lab->status == LABEL_STATUS_KNOWN?'Y':'N');
 }

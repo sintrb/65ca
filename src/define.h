@@ -34,6 +34,8 @@ typedef unsigned char t_bool;
 	#define D 
 #endif
 
+#define O printf
+
 #ifndef true
 #define true 1
 #endif

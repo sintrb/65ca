@@ -163,7 +163,7 @@ ${HEX}{2} {
 
 "#" { RETTOKEN(POUND); }
 "$" { RETTOKEN(DOLLAR); }
-
+" " {}
 
 \.ORG { RETTOKEN(CMD_ORG); }
 
@@ -176,10 +176,11 @@ ${HEX}{2} {
 }
 
 
-\.DEFSEG|DEFINESEGMENT {
+\.DEFSEG|\.DEFINESEGMENT {
 	curlinetype = LINETYPE_DEFSEG;
 	RETTOKEN(CMD_DEFSEG);
 }
+
 name {
 	if(curlinetype == LINETYPE_DEFSEG){
 		RETTOKEN(CMD_DEFSEG_NAME);

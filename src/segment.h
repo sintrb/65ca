@@ -24,6 +24,7 @@ struct segment
 	t_value index;
 	struct filepos filepos;
 	unsigned char * data;
+	unsigned char * flag;
 };
 
 // 初始化segment
