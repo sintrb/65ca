@@ -6,7 +6,7 @@ Robin 2014-05-07
 #include "define.h"
 #include "basefuns.h"
 #include "functions.h"
-
+#include "segment.h"
 
 // 值类型
 struct valobj
@@ -19,6 +19,13 @@ struct valobj
 
 typedef struct valobj t_valobj;
 
+// 标签任务
+struct labeltask
+{
+	struct filepos filepos;
+	struct segment *segment;
+	t_value addr;
+};
 
 #define valobj_info(_vo) D("(%s ref:%d)", (_vo)->label ? (_vo)->label->name:"", (_vo)->refcount);
 #define valobj_del(_vo) {D("free");valobj_info(_vo); FREE(_vo);(_vo)=NULL;}
@@ -39,8 +46,9 @@ struct label
 	char *name;
 	struct valobj *val;
 	struct filepos filepos;
-	t_link tasks;
 	enum labelstatus status;
+
+	t_list tasks;
 };
 
 extern t_map labels;
@@ -51,8 +59,14 @@ void label_init();
 // 创建新标签
 struct label * label_new();
 
+// 创建标签任务
+struct labeltask *label_newtask();
+
 // 获取标签
 struct label * label_get(const char *name, t_bool autoadd);
+
+// 添加任务
+void label_addtask(struct label *lab, struct labeltask *tsk);
 
 // 输出标签信息
 void label_detail(struct label * lab);

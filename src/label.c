@@ -29,6 +29,14 @@ struct label * label_new(){
 	return lab;
 }
 
+struct labeltask *label_newtask(){
+	struct labeltask * tsk =(struct labeltask *)MALLOC(sizeof(struct labeltask));
+	tsk->filepos = filepos_curpos();
+	tsk->segment = curseg;
+	tsk->addr = curseg->start + curseg->index;
+	return tsk;
+}
+
 struct label * label_get(const char *name, t_bool autoadd){
 	struct mapnode * node = map_get(labels, name);
 	struct label *lab = NULL;
@@ -53,6 +61,19 @@ struct label * label_get(const char *name, t_bool autoadd){
 	return lab;
 }
 
+void label_addtask(struct label *lab, struct labeltask *tsk){
+	if(!lab->tasks){
+		lab->tasks = list_newlist();
+	}
+	list_add(lab->tasks, tsk);
+}
+
 void label_detail(struct label * lab){
-	O("{%s v:%04x ref:%d kwn:%c}", lab->name, lab->val->value, lab->val->refcount, lab->status == LABEL_STATUS_KNOWN?'Y':'N');
+	O("{%s v:%04x ref:%d kwn:%c}\n", lab->name, lab->val->value, lab->val->refcount, lab->status == LABEL_STATUS_KNOWN?'Y':'N');
+	if(lab->tasks){
+		struct listnode * next;
+		struct labeltask * task;
+		list_each(struct labeltask *, lab->tasks, next, task, D("\tseg:%s addr:$%04x %s(%d)\n", task->segment->name, task->addr, task->filepos.filename, task->filepos.lineno));
+		O("\n");
+	}
 }
