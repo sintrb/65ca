@@ -81,6 +81,8 @@ void ins_compile(t_token ins, struct valobj *val);
 // 结束段定义
 void cmd_end_defseg();
 
+// 显示信息
+void cmd_info(const char *name);
 
 
 

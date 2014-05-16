@@ -256,6 +256,9 @@ command
 		// .org $0000
 		M_SETCURADDR($2->value);
 	}
+	| CMD_INFO iname {
+		cmd_info($2);
+	}
 	| cmdlabel
 	| cmd_segdef
 ;
@@ -283,9 +286,6 @@ cmdlabel
 		// lab:
 		cmd_label($1, NULL);
 		FREE($1);
-	}
-	| CMD_INFO iname {
-		label_detail((label_get($2, true)));
 	}
 ;
 

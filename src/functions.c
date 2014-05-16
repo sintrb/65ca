@@ -164,7 +164,7 @@ void cmd_end_defseg(){
 	if(!curdefseg->name){
 		M_ERROR("segment name is invalid")
 	}
-	segment_detail(curdefseg);
+	
 	if(curdefseg->size<=0){
 		M_ERROR("segment size is invalid")
 	}
@@ -184,6 +184,18 @@ void cmd_end_defseg(){
 		curseg =  curdefseg;
 	}
 	curdefseg = NULL;
+}
+
+
+void cmd_info(const char *name){
+	struct mapnode * node = NULL;
+	node = map_get(segments, name);
+	if(node)
+		segment_detail((struct segment*)node->data);
+
+	node = map_get(labels, name);
+	if(node)
+		label_detail((struct label*)node->data);
 }
 
 
