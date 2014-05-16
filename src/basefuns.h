@@ -11,6 +11,7 @@ Robin 2014-05-06
 struct linknode
 {
 	struct linknode *next;
+	struct linknode *prev;
 };
 
 typedef struct linknode t_linknode;
@@ -23,10 +24,10 @@ struct linknode * link_newnode(int size);
 // 向链表中添加一个节点
 struct linknode * link_addnew(t_link link, int size);
 
-// 在链表中查找, _tpye为链表类型，_link为需要操作的链表，_pname为迭代用的变量名称，_cond为终止条件，找到之后节点保存在_pname中
+// 在链表中查找, _tpye为链表类型，_link为需要操作的链表，_pname为迭代用的变量名称，_cond为终止条件，找到之后节点保存在_pname中，需判断是否和link相等
 #define link_find(_type, _link, _pname, _cond) \
 	_pname = (_type)(((t_link)_link)->next); \
-	while(_pname){ \
+	while((t_link)_pname!=(t_link)_link){ \
 		if(_cond) \
 			break; \
 		_pname = (_type)(((t_link)_pname)->next); \
@@ -35,14 +36,38 @@ struct linknode * link_addnew(t_link link, int size);
 // 对链表进行枚举, _tpye为链表类型，_link为需要操作的链表，_pname为迭代用的变量名称，_handle为需要执行的操作
 #define link_each(_type, _link, _pname, _handle) \
 	_pname = (_type)(((t_link)_link)->next); \
-	while(_pname){ \
+	while((t_link)_pname!=(t_link)_link){ \
 		_handle;\
 		_pname = (_type)(((t_link)_pname)->next); \
 	}
 // end 链表
 
 
+// begin List
+struct listnode
+{
+	struct linknode *link;
+	void *data;
+};
 
+typedef struct listnode * t_list;
+
+// 创建新列表
+t_list list_newlist();
+
+// 添加一项
+struct listnode * list_add(t_list list, void *data);
+
+// 对列表中的数据进行查找, _tpye为列表值类型，_list为需要操作的链表，_pname为迭代用的节点变量名称，_data为数据名称，_cond为终止条件，找到之后节点保存在_pname中，需判断是否和link相等
+#define list_find(_type, _list, _pname, _data, _cond) link_each(struct listnode *, _list, _pname, ((_data = (_type)_pname->data), _cond))
+
+// 对列表中的数据进行枚举, _tpye为列表值类型，_list为需要操作的链表，_pname为迭代用的节点变量名称，_data为数据名称，_handle为需要执行的操作
+#define list_each(_type, _list, _pname, _data, _handle) link_each(struct listnode *, _list, _pname, {\
+		_data = (_type)_pname->data;\
+		_handle;\
+	})
+
+// end List
 
 
 
@@ -90,33 +115,6 @@ struct mapnode * map_get(t_map map, const char *key);
 void * map_val(t_map map, const char *key);
 // end Map
 
-
-// begin List
-struct listnode
-{
-	struct linknode *link;
-	void *data;
-};
-
-typedef struct listnode * t_list;
-
-// 创建新列表
-t_list list_newlist();
-
-// 添加一项
-struct listnode * list_add(t_list list, void *data);
-
-
-// 对列表中的数据进行枚举, _tpye为列表值类型，_list为需要操作的链表，_pname为迭代用的节点变量名称，_data为数据名称，_handle为需要执行的操作
-#define list_each(_type, _link, _pname, _data, _handle) \
-	_pname = (struct listnode *)(((t_link)_link)->next); \
-	while(_pname){ \
-		_data = (_type)_pname->data;\
-		_handle;\
-		_pname = (struct listnode *)(((t_link)_pname)->next); \
-	}
-
-// end List
 
 
 

@@ -18,18 +18,35 @@ t_link link_newlink(int size){
 }
 struct linknode * link_newnode(int size){
 	struct linknode * node = (struct linknode *)MALLOC(size);
-	node->next = NULL;
+	node->next = node->prev = node;
 	return node;
 }
 struct linknode * link_addnew(t_link link, int size){
 	struct linknode * node = (struct linknode *)MALLOC(size);
-	node->next = link->next;
-	link->next = node;
+	link->prev->next = node;
+	node->prev = link->prev;
+
+	node->next = link;
+	link->prev = node;
+
 	return node;
 }
 
 // end link
 
+
+// begin list
+t_list list_newlist(){
+	return (t_list)link_newlink(sizeof(struct listnode));
+}
+
+struct listnode * list_add(t_list list, void *data){
+	struct listnode * node = (struct listnode *)link_addnew((t_link)list,sizeof(struct listnode));
+	node->data = data;
+	return node;
+}
+
+// end list
 
 // begin string
 
@@ -103,7 +120,7 @@ struct mapnode * map_put(t_map map, const char *key, void * data){
 struct mapnode * map_get(t_map map, const char *key){
 	struct mapnode * next;
 	link_find(t_map, map, next, strcmp(key, next->key)==0);
-	return next;
+	return next!=map?next:NULL;
 }
 void * map_val(t_map map, const char *key){
 	struct mapnode * next;
@@ -113,15 +130,4 @@ void * map_val(t_map map, const char *key){
 // end map
 
 
-// begin list
-t_list list_newlist(){
-	return (t_list)link_newlink(sizeof(struct listnode));
-}
 
-struct listnode * list_add(t_list list, void *data){
-	struct listnode * node = (struct listnode *)link_addnew((t_link)list,sizeof(struct listnode));
-	node->data = data;
-	return node;
-}
-
-// end list

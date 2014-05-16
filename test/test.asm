@@ -11,4 +11,12 @@ sta $0000,y
 iny
 bne start
 
+lda abc
+lda abc
+lda abc
+lda abc
+
+
 .info ROM
+
+.info abc
