@@ -6,7 +6,7 @@ Robin 2014-05-05
 #ifndef DEFINE_H
 #define DEFINE_H
 
-// #define DEBUG_MODE 1
+#define DEBUG_MODE 1
 
 
 #define MALLOC(_size) malloc(_size)

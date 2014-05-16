@@ -167,7 +167,7 @@ ${HEX}{2} {
 
 \.ORG { RETTOKEN(CMD_ORG); }
 
-\.LAB|LABEL {
+\.LAB|\.LABEL {
 	RETTOKEN(CMD_LAB);
 }
 
@@ -175,10 +175,13 @@ ${HEX}{2} {
 	RETTOKEN(CMD_INFO);
 }
 
-
 \.DEFSEG|\.DEFINESEGMENT {
 	curlinetype = LINETYPE_DEFSEG;
 	RETTOKEN(CMD_DEFSEG);
+}
+
+\.SEG|\.SEGMENT {
+	RETTOKEN(CMD_SEG);
 }
 
 name {

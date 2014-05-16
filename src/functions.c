@@ -144,7 +144,7 @@ void ins_compile(t_token ins, struct valobj *val){
 		case IDIRADDR:{
 			segment_write(curseg, io->code);
 			if(!val->label || val->label->status == LABEL_STATUS_KNOWN){
-				segment_write(curseg, val->value);
+				segment_write(curseg, val->value&0x00ff);
 				segment_write(curseg, val->value>>8);
 			}
 			else{
@@ -176,14 +176,14 @@ void cmd_end_defseg(){
 		M_ERROR("some thing wrong: no defseg, but enter cmd_end_defseg");
 	}
 	if(!curdefseg->name){
-		M_ERROR("segment name is invalid")
+		M_ERROR("segment name is invalid");
 	}
 	
 	if(curdefseg->size<=0){
-		M_ERROR("segment size is invalid")
+		M_ERROR("segment size is invalid");
 	}
 	if(curdefseg->start<0){
-		M_ERROR("segment start is invalid")
+		M_ERROR("segment start is invalid");
 	}
 	struct mapnode * node = map_get(segments, curdefseg->name);
 	if(node){
@@ -218,6 +218,13 @@ void cmd_info(const char *name){
 		label_detail((struct label*)node->data);
 }
 
-
+void cmd_seg(const char *name){
+	struct mapnode * node = map_get(segments, name);
+	if(node)
+		curseg = (struct segment*)node->data;
+	else{
+		M_ERROR("no such segment %s", name);
+	}
+}
 
 

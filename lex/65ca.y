@@ -40,7 +40,7 @@
 
 
 // command
-%token CMD_ORG CMD_LAB CMD_DEFSEG CMD_INFO
+%token CMD_ORG CMD_LAB CMD_DEFSEG CMD_INFO CMD_SEG
 
 // defseg
 %token CMD_DEFSEG_NAME CMD_DEFSEG_START CMD_DEFSEG_SIZE CMD_DEFSEG_FILL
@@ -258,6 +258,11 @@ command
 	}
 	| CMD_INFO iname {
 		cmd_info($2);
+		FREE($2);
+	}
+	| CMD_SEG iname {
+		cmd_seg($2);
+		FREE($2);
 	}
 	| cmdlabel
 	| cmd_segdef

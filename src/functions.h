@@ -74,7 +74,8 @@ void cmd_end_defseg();
 // 显示信息
 void cmd_info(const char *name);
 
-
+// 切换段
+void cmd_seg(const char *name);
 
 
 #endif

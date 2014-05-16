@@ -1,18 +1,16 @@
-.DEFINESEGMENT name=CODE size=128    fill=#$00   start=$8000
-
+.defseg name=ROM size=128    fill=#$00   start=$8000
+.defseg name=VROM size=128    fill=#$00   start=$0000
 
 
 start:
 lda #$12
-
-
 ldx #$21
-
-
-.org start
 lda #$11
 
+.seg VROM
+lda #$78
 
 
 
-.info CODE
+.info ROM
+.info VROM
