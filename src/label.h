@@ -68,5 +68,8 @@ struct label * label_get(const char *name, t_bool autoadd);
 // 添加任务
 void label_addtask(struct label *lab, struct labeltask *tsk);
 
+// 执行任务
+void label_dotask(struct label *lab);
+
 // 输出标签信息
 void label_detail(struct label * lab);

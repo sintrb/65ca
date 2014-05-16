@@ -68,6 +68,44 @@ void label_addtask(struct label *lab, struct labeltask *tsk){
 	list_add(lab->tasks, tsk);
 }
 
+void label_dotask(struct label *lab){
+	if(lab->tasks){
+		struct listnode * next;
+		struct labeltask * task;
+		struct valobj *val = lab->val;
+		list_each(struct labeltask *, lab->tasks, next, task, {
+			switch(lab->val->token){
+				case NUM:
+				case ZPADDR:
+				case XZPADDR:
+				case YZPADDR:
+				case XIDIRADDR:
+				case YIDIRADDR:{
+					segment_write_at(task->segment, val->value, task->addr);
+					break;
+				}
+				case ADDR:
+				case XADDR:
+				case YADDR:
+				case IDIRADDR:{
+					segment_write_at(task->segment, val->value&0x00ff, task->addr);
+					segment_write_at(task->segment, val->value>>8, task->addr+1);
+					break;
+				}
+				case READDR:{
+					segment_write_at(task->segment, cal_readdr(task->addr, val->value), task->addr);
+					break;
+				}
+				default:{
+					M_ERROR("unknow addr token(%d)", lab->val->token);
+				}
+			}
+			FREE(task);
+		});
+		lab->tasks = NULL;	
+	}
+}
+
 void label_detail(struct label * lab){
 	O("{%s v:%04x ref:%d kwn:%c}\n", lab->name, lab->val->value, lab->val->refcount, lab->status == LABEL_STATUS_KNOWN?'Y':'N');
 	if(lab->tasks){

@@ -65,8 +65,9 @@ struct label * cmd_label(const char *name, struct valobj *val){
 		else{
 			lab->filepos = filepos_curpos();
 			lab->status = LABEL_STATUS_KNOWN;
-			// TODO: process tasks
-			D("TASK(%s)",lab->name);
+			valobj_retain(val);
+			lab->val = val;
+			label_dotask(lab);
 		}
 	}
 	else{
