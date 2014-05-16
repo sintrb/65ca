@@ -6,7 +6,7 @@ Robin 2014-05-05
 #ifndef DEFINE_H
 #define DEFINE_H
 
-#define DEBUG_MODE 1
+// #define DEBUG_MODE 1
 
 
 #define MALLOC(_size) malloc(_size)
@@ -51,7 +51,7 @@ int yylex();
 void yyerror(const char *err);
 
 #define M_ERROR(_fmt, _args...) {fprintf(stderr,"error: %s(%d): ", curfile, curlineno); fprintf(stderr, _fmt, ##_args); destory(); exit(1);}
-
+#define M_WARN(_fmt, _args...) {fprintf(stdout,"warn: %s(%d): ", curfile, curlineno); fprintf(stdout, _fmt, ##_args); fprintf(stdout, "\n"); }
 
 enum linetype
 {

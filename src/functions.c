@@ -38,15 +38,6 @@ void destory(){
 }
 
 
-void writeout(t_value v){
-	if(!curseg){
-		M_ERROR("not in any segment");
-	}
-	segment_write(curseg, v);
-}
-
-
-
 t_value cal_readdr(t_value nowaddr, t_value tagaddr){
 	t_value bt;
 	if(tagaddr > nowaddr && (tagaddr - nowaddr) <= 256){
@@ -125,9 +116,10 @@ void ins_compile(t_token ins, struct valobj *val){
 	if(!io){
 		M_ERROR("sys error ins:%d", ins);
 	}
+	M_CHECKCURSEG();
 	switch(io->addr){
 		case NONE:{
-			M_WRITE_CMD(io->code);
+			segment_write(curseg, io->code);
 			break;
 		}
 		case NUM:
@@ -136,22 +128,44 @@ void ins_compile(t_token ins, struct valobj *val){
 		case YZPADDR:
 		case XIDIRADDR:
 		case YIDIRADDR:{
-			M_WRITE_BYTE(io->code, val->value);
+			segment_write(curseg, io->code);
+			if(!val->label || val->label->status == LABEL_STATUS_KNOWN){
+				segment_write(curseg, val->value);
+			}
+			else{
+				// add task
+				segment_skip(curseg, 1);
+			}
 			break;
 		}
 		case ADDR:
 		case XADDR:
 		case YADDR:
 		case IDIRADDR:{
-			M_WRITE_WORD(io->code, val->value);
+			segment_write(curseg, io->code);
+			if(!val->label || val->label->status == LABEL_STATUS_KNOWN){
+				segment_write(curseg, val->value);
+				segment_write(curseg, val->value>>8);
+			}
+			else{
+				// add task
+				segment_skip(curseg, 2);
+			}
 			break;
 		}
 		case READDR:{
-			M_WRITE_REL(io->code, val->value);
+			segment_write(curseg, io->code);
+			if(!val->label || val->label->status == LABEL_STATUS_KNOWN){
+				segment_write(curseg, cal_readdr(CURADDR,val->value));
+			}
+			else{
+				// add task
+				segment_skip(curseg, 1);
+			}
 			break;
 		}
 		default:{
-			M_ERROR("unknow addr(%d)", io->addr);
+			M_ERROR("unknow addr token(%d)", io->addr);
 		}
 	}
 }
@@ -181,9 +195,9 @@ void cmd_end_defseg(){
 		curdefseg->data[i] = curdefseg->fill;
 	}
 	// flag
-	curdefseg->flag = (unsigned char*)MALLOC(curdefseg->size);
+	curdefseg->flag = (enum segmentflag*)MALLOC(curdefseg->size*sizeof(enum segmentflag));
 	for(i=0; i<curdefseg->size; ++i){
-		curdefseg->flag[i] = 0;
+		curdefseg->flag[i] = SEGMENT_FLAG_RAW;
 	}
 	node = map_put(segments, curdefseg->name, curdefseg);
 	if(curseg==NULL){

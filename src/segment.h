@@ -12,6 +12,11 @@ Robin 2014-05-15
 extern t_map segments;
 extern struct segment * curdefseg;
 extern struct segment * curseg;
+enum segmentflag {
+	SEGMENT_FLAG_RAW = 0,
+	SEGMENT_FLAG_WROTE,
+	SEGMENT_FLAG_UNKNOWN
+};
 struct segment
 {
 	/* 属性 */
@@ -24,7 +29,7 @@ struct segment
 	t_value index;
 	struct filepos filepos;
 	unsigned char * data;
-	unsigned char * flag;
+	enum segmentflag * flag;
 };
 
 // 初始化segment
@@ -38,6 +43,9 @@ t_value segment_write(struct segment *seg, t_value val);
 
 // 设置地址
 void segment_setaddr(struct segment *seg, t_value addr);
+
+// 跳过数据
+void segment_skip(struct segment *seg, t_value cnt);
 
 // 输出段信息
 void segment_detail(struct segment *seg);

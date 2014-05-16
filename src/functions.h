@@ -21,11 +21,8 @@ extern char curident[256];
 
 
 #define M_SETCURADDR(_addr)	{if(!curseg)M_ERROR("not in any segment")else segment_setaddr(curseg, _addr);};
+#define M_CHECKCURSEG()	{if(!curseg){M_ERROR("not in any segment");}}
 
-#define M_WRITE_CMD(_cmd) writeout(_cmd);
-#define M_WRITE_BYTE(_cmd, _val) M_WRITE_CMD(_cmd);writeout(_val);
-#define M_WRITE_WORD(_cmd, _val) M_WRITE_CMD(_cmd);writeout(_val);writeout((_val)>>8);
-#define M_WRITE_REL(_cmd, _val) M_WRITE_CMD(_cmd);writeout(cal_readdr(CURADDR,_val));
 
 // begin 编译器
 
@@ -36,13 +33,6 @@ void destory();
 
 // end 编译器
 
-
-// 输出
-
-// 输出单字节
-void writeout(t_value v);
-
-// end 输出
 
 // begin 计算
 

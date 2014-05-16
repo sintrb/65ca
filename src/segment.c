@@ -32,21 +32,32 @@ t_value segment_write(struct segment *seg, t_value val){
 	if(seg->index>=seg->size){
 		M_ERROR("out of segment(%s) size(%d)", seg->name, seg->size);
 	}
+	if(seg->flag[seg->index] == SEGMENT_FLAG_WROTE){
+		M_WARN("override at {%s $%04x}", seg->name, seg->start+seg->index);
+	}
 	seg->data[seg->index] = (unsigned char)(0x00ff&val);
-	seg->flag[seg->index] = 1;
+	seg->flag[seg->index] = SEGMENT_FLAG_WROTE;
 	++seg->index;
 }
 
 void segment_setaddr(struct segment *seg, t_value addr){
 	if(addr<seg->start || addr>=(seg->start+seg->size)){
-		M_ERROR("out of segment(%s) address(%04x-%04x)", seg->name, seg->start, seg->start+seg->size-1);
+		M_ERROR("$%04x out of segment(%s) address(%04x-%04x)", addr, seg->name, seg->start, seg->start+seg->size-1);
 	}
 	seg->index = addr-seg->start;
 }
 
+void segment_skip(struct segment *seg, t_value cnt){
+	t_value start = seg->index;
+	segment_setaddr(seg, seg->start+seg->index+cnt);
+	for(;start<seg->index;++start){
+		seg->flag[start] = SEGMENT_FLAG_UNKNOWN;
+	}
+}
+
 void segment_detail(struct segment *seg){
 	int i;
-	O("{%s st:%04x sz:%d fil:%02x ix:%d addr:%04x}\n\t", seg->name, seg->start, seg->size, seg->fill, seg->index, seg->start+seg->index);
+	O("{%s st:$%04x sz:%d fil:#$%02x ix:%d addr:$%04x}\n\t", seg->name, seg->start, seg->size, seg->fill, seg->index, seg->start+seg->index);
 	for(i=0; i<seg->size; ++i){
 		if(i!=0 && i%16==0)
 			O("\n\t");
@@ -54,10 +65,12 @@ void segment_detail(struct segment *seg){
 			O("|");
 		else
 			O(" ");
-		if(seg->flag[i])
+		if(seg->flag[i]==SEGMENT_FLAG_WROTE)
 			O("%02x", seg->data[i]);
-		else
+		else if(seg->flag[i]==SEGMENT_FLAG_RAW)
 			O("xx");
+		else if(seg->flag[i]==SEGMENT_FLAG_UNKNOWN)
+			O("??");
 	}
 	O("\n");
 }

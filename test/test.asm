@@ -2,14 +2,15 @@
 
 
 
-
+start:
 lda #$12
 
-.org $8010
 
 ldx #$21
 
 
+.org start
+lda #$11
 
 
 
