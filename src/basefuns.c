@@ -111,3 +111,17 @@ void * map_val(t_map map, const char *key){
 	return next != NULL ? next->data : NULL;
 }
 // end map
+
+
+// begin list
+t_list list_newlist(){
+	return (t_list)link_newlink(sizeof(struct listnode));
+}
+
+struct listnode * list_add(t_list list, void *data){
+	struct listnode * node = (struct listnode *)link_addnew((t_link)list,sizeof(struct listnode));
+	node->data = data;
+	return node;
+}
+
+// end list
