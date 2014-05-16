@@ -134,6 +134,7 @@ void ins_compile(t_token ins, struct valobj *val){
 			}
 			else{
 				// add task
+				label_addtask(val->label, label_newtask());
 				segment_skip(curseg, 1);
 			}
 			break;
@@ -149,6 +150,7 @@ void ins_compile(t_token ins, struct valobj *val){
 			}
 			else{
 				// add task
+				label_addtask(val->label, label_newtask());
 				segment_skip(curseg, 2);
 			}
 			break;
@@ -160,6 +162,7 @@ void ins_compile(t_token ins, struct valobj *val){
 			}
 			else{
 				// add task
+				label_addtask(val->label, label_newtask());
 				segment_skip(curseg, 1);
 			}
 			break;

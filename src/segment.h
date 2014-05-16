@@ -38,8 +38,11 @@ void segment_init();
 // 新建段
 struct segment *segment_new();
 
+// 向段中指定的位写如数据(字节)
+void segment_write_at(struct segment *seg, t_value val, t_value addr);
+
 // 向段写入数据(字节)
-t_value segment_write(struct segment *seg, t_value val);
+void segment_write(struct segment *seg, t_value val);
 
 // 设置地址
 void segment_setaddr(struct segment *seg, t_value addr);

@@ -27,16 +27,21 @@ struct segment *segment_new(){
 	return seg;
 }
 
+void segment_write_at(struct segment *seg, t_value val, t_value addr){
+	t_value index;
+	if(addr<seg->start || addr>=(seg->start+seg->size)){
+		M_ERROR("$%04x out of segment(%s) address(%04x-%04x)", addr, seg->name, seg->start, seg->start+seg->size-1);
+	}
+	index = addr-seg->start;
+	if(seg->flag[index] == SEGMENT_FLAG_WROTE){
+		M_WARN("override at {%s $%04x}", seg->name, addr);
+	}
+	seg->data[index] = (unsigned char)(0x00ff&val);
+	seg->flag[index] = SEGMENT_FLAG_WROTE;
+}
 
-t_value segment_write(struct segment *seg, t_value val){
-	if(seg->index>=seg->size){
-		M_ERROR("out of segment(%s) size(%d)", seg->name, seg->size);
-	}
-	if(seg->flag[seg->index] == SEGMENT_FLAG_WROTE){
-		M_WARN("override at {%s $%04x}", seg->name, seg->start+seg->index);
-	}
-	seg->data[seg->index] = (unsigned char)(0x00ff&val);
-	seg->flag[seg->index] = SEGMENT_FLAG_WROTE;
+void segment_write(struct segment *seg, t_value val){
+	segment_write_at(seg,val,seg->start + seg->index);
 	++seg->index;
 }
 
