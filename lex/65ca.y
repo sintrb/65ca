@@ -71,6 +71,9 @@ line
 	| instruction
 	| NL {
 		D("\n");
+		if(curdefseg){
+			cmd_end_defseg();
+		}
 	}
 ;
 
@@ -267,7 +270,7 @@ cmdlabel
 	}
 	| iname EQUAL ident {
 		// lab=value
-		if(curlinetype = LINETYPE_NORMAL){
+		if(curlinetype == LINETYPE_NORMAL){
 			cmd_label($1, $3);
 		}
 		else{

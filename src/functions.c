@@ -14,7 +14,7 @@ Robin 2014-05-05
 
 
 // t_value curval = 0x00;
-t_value curaddr = 0x0000;
+// t_value curaddr = 0x0000;
 char * curfile = "test.asm";
 char curident[256];
 
@@ -26,7 +26,8 @@ const char *ofile = "output.bin";
 
 void init(){
 	instab_init();
-	labels = map_newmap();
+	segment_init();
+	label_init();
 }
 
 void destory(){
@@ -38,23 +39,10 @@ void destory(){
 
 
 void writeout(t_value v){
-	unsigned char buf[1];
-	v &= 0x00ff;
-	if(!fp){
-		fp = fopen(ofile, "wb");
-		if(!fp){
-			fprintf(stderr, "open %s for write fail\n", ofile);
-			exit(1);
-		}
+	if(!curseg){
+		M_ERROR("not in any segment");
 	}
-
-
-	D("[%02x]", v);
-
-	buf[0] = (unsigned char)v;
-	fwrite(buf, 1, 1,  fp);
-
-	++curaddr;
+	segment_write(curseg, v);
 }
 
 
@@ -166,6 +154,36 @@ void ins_compile(t_token ins, struct valobj *val){
 			M_ERROR("unknow addr(%d)", io->addr);
 		}
 	}
+}
+
+void cmd_end_defseg(){
+	int i;
+	if(!curdefseg){
+		M_ERROR("some thing wrong: no defseg, but enter cmd_end_defseg");
+	}
+	if(!curdefseg->name){
+		M_ERROR("segment name is invalid")
+	}
+	segment_detail(curdefseg);
+	if(curdefseg->size<=0){
+		M_ERROR("segment size is invalid")
+	}
+	if(curdefseg->start<0){
+		M_ERROR("segment start is invalid")
+	}
+	struct mapnode * node = map_get(segments, curdefseg->name);
+	if(node){
+		M_ERROR("segment \"%s\" defined at %s(%d)", curdefseg->name, curdefseg->filepos.filename, curdefseg->filepos.lineno);
+	}
+	curdefseg->data = (unsigned char*)MALLOC(curdefseg->size);
+	for(i=0; i<curdefseg->size; ++i){
+		curdefseg->data[i] = curdefseg->fill;
+	}
+	node = map_put(segments, curdefseg->name, curdefseg);
+	if(curseg==NULL){
+		curseg =  curdefseg;
+	}
+	curdefseg = NULL;
 }
 
 

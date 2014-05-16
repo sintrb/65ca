@@ -5,6 +5,8 @@
 #include "define.h"
 #include "functions.h"
 
+#include "segment.h"
+
 #define RETTOKEN(t) D(#t);return t;
 #define M_ERROR_NOTNUM() M_ERROR("%s not number", yytext);
 %}
@@ -220,6 +222,9 @@ fill {
 	RETTOKEN(IDENT);
 }
 
-{NL}+ { curlinetype = LINETYPE_NORMAL; return NL; }
-[ \t\n] {}
+{NL}+ {
+	curlinetype = LINETYPE_NORMAL;
+	return NL;
+}
+
 %%

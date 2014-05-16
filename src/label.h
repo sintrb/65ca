@@ -2,6 +2,7 @@
 label.h
 Robin 2014-05-07
 **/
+
 #include "define.h"
 #include "basefuns.h"
 #include "functions.h"
@@ -43,6 +44,9 @@ struct label
 };
 
 extern t_map labels;
+
+// 初始化label
+void label_init();
 
 // 创建新标签
 struct label * label_new();

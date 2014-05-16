@@ -10,16 +10,17 @@ Robin 2014-05-05
 #include "define.h"
 #include "basefuns.h"
 
+
 // extern t_value curval;
 extern t_value curaddr;
 extern char * curfile;
 extern char curident[256];
 
 // #define CURVAL	curval
-#define CURADDR	curaddr
+#define CURADDR	(curseg?curseg->index+curseg->start:0)
 
 
-#define M_SETCURADDR(_addr)	curaddr = _addr;
+#define M_SETCURADDR(_addr)	{if(!curseg)M_ERROR("not in any segment")else segment_setaddr(curseg, _addr);};
 
 #define M_WRITE_CMD(_cmd) writeout(_cmd);
 #define M_WRITE_BYTE(_cmd, _val) M_WRITE_CMD(_cmd);writeout(_val);
@@ -77,7 +78,8 @@ struct filepos filepos_curpos();
 // 编译指令token为ins，值为val的代码行
 void ins_compile(t_token ins, struct valobj *val);
 
-
+// 结束段定义
+void cmd_end_defseg();
 
 
 

@@ -7,6 +7,10 @@ Robin 2014-05-07
 
 t_map labels = NULL;
 
+void label_init(){
+	labels = map_newmap();
+}
+
 struct valobj *label_newval(t_token tk, t_value val){
 	t_valobj* to = ((t_valobj*)malloc(sizeof(t_valobj)));
 	to->token = tk;
