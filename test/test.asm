@@ -11,4 +11,11 @@ sta $0000,y
 iny
 bne start
 
+
+.dat 1 2 3 4 nmi rest irq
+
+nmi=$1234
+rest=$5678
+irq=$8899
+
 .info ROM

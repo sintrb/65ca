@@ -77,5 +77,7 @@ void cmd_info(const char *name);
 // 切换段
 void cmd_seg(const char *name);
 
+// 写入数据
+void cmd_dat(t_list list);
 
 #endif
