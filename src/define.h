@@ -50,6 +50,9 @@ extern int yylineno;
 int yylex();
 void yyerror(const char *err);
 
+extern char *infile;
+extern char *outfile;
+
 #define M_ERROR(_fmt, _args...) {fprintf(stderr,"error: %s(%d): ", curfile, curlineno); fprintf(stderr, _fmt, ##_args); destory(); exit(1);}
 #define M_WARN(_fmt, _args...) {fprintf(stdout,"warn: %s(%d): ", curfile, curlineno); fprintf(stdout, _fmt, ##_args); fprintf(stdout, "\n"); }
 
