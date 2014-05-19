@@ -184,6 +184,10 @@ ${HEX}{2} {
 	RETTOKEN(CMD_SEG);
 }
 
+\.DAT|\.DATA {
+	RETTOKEN(CMD_DAT);
+}
+
 name {
 	if(curlinetype == LINETYPE_DEFSEG){
 		RETTOKEN(CMD_DEFSEG_NAME);

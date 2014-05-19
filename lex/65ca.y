@@ -14,6 +14,7 @@
 
 %union{
 	struct valobj *val;
+	struct listnode *dlist;
 	enum yytokentype token;
 	char * name;
 }
@@ -40,7 +41,7 @@
 
 
 // command
-%token CMD_ORG CMD_LAB CMD_DEFSEG CMD_INFO CMD_SEG
+%token CMD_ORG CMD_LAB CMD_DEFSEG CMD_INFO CMD_SEG CMD_DAT
 
 // defseg
 %token CMD_DEFSEG_NAME CMD_DEFSEG_START CMD_DEFSEG_SIZE CMD_DEFSEG_FILL
@@ -59,6 +60,7 @@
 %type <val> ident addr
 %type <name> iname
 %type <token> ins
+%type <dlist> datalist
 %%
 
 lines 
@@ -266,6 +268,7 @@ command
 	}
 	| cmdlabel
 	| cmd_segdef
+	| cmd_dat
 ;
 
 
@@ -316,6 +319,24 @@ cmd_segdef
 		curdefseg->fill = $3->value;
 		valobj_release($3);
 	}
+;
+
+cmd_dat
+	: CMD_DAT datalist {
+		cmd_dat($2);
+	}
+;
+
+datalist
+	: ident datalist {
+		$$=$2;
+		list_add($2, $1);
+	}
+	| ident {
+		$$ = list_newlist();
+		list_add($$, $1);
+	}
+;
 %%
 
 

@@ -232,3 +232,42 @@ void cmd_seg(const char *name){
 }
 
 
+void cmd_dat(t_list list){
+	struct listnode * next;
+	struct valobj * val;
+	M_CHECKCURSEG();
+	list_each(struct valobj *, list, next, val, {
+		D("%04x ", val->value);
+		switch(val->token){
+			case NUM:
+			case ZPADDR:{
+				if(!val->label || val->label->status == LABEL_STATUS_KNOWN){
+					segment_write(curseg, val->value);
+				}
+				else{
+					// add task
+					label_addtask(val->label, label_newtask());
+					segment_skip(curseg, 1);
+				}
+				break;
+			}
+			case ADDR:{
+				if(!val->label || val->label->status == LABEL_STATUS_KNOWN){
+					segment_write(curseg, val->value&0x00ff);
+					segment_write(curseg, val->value>>8);
+				}
+				else{
+					// add task
+					label_addtask(val->label, label_newtask());
+					segment_skip(curseg, 2);
+				}
+				break;
+			}
+			default:{
+				M_ERROR("unknow data token(%d)", val->token);
+			}
+		}
+	});
+	O("\n");
+}
+
