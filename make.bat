@@ -15,4 +15,6 @@ cd ..\src
 win_flex ..\lex\65ca.l
 gcc -o ..\bin\65ca.exe *.c
 cd ..
-type test\test.asm | bin\65ca.exe
+REM type test\test.asm | bin\65ca.exe
+
+bin\65ca.exe test\test.asm

@@ -46,7 +46,8 @@ int main(int argc, char *argv[])
 		outfile = (char*)MALLOC(256);
 		sprintf(outfile, "%s.bin", infile);
 	}
-	printf("%s->65ca->%s\n", infile, outfile);
+	printf("%s-->65ca-->%s\n", infile, outfile);
+	exit(0);
 	init();
 	yyparse();
 	destory();
