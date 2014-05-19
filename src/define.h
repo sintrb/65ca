@@ -6,6 +6,9 @@ Robin 2014-05-05
 #ifndef DEFINE_H
 #define DEFINE_H
 
+#define VERSION_I	111
+#define VERSION_S	"1.1.1"
+
 #define DEBUG_MODE 1
 
 

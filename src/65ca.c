@@ -12,16 +12,25 @@ int main(int argc, char *argv[])
 {
 	char ch;
 	opterr = 0;
-	while((ch=getopt(argc,argv,"ho:"))!=-1) {
+	while((ch=getopt(argc,argv,"vho:"))!=-1) {
 		switch(ch){
 			case '?':
+				// unknow
 				fprintf(stderr, "unknown option: %c\n", optopt);
+				exit(1);
 				break;
 			case 'o':
+				// output file
 				outfile = str_clone(optarg);
 				break;
 			case 'h':
+				// help
 				printf("usage: %s [-h] -o outfile infile\n\t-h, help information, show this page\n\t-o outfile, the output binary file, 6502 machine code\n\tinfile, the input file, assembly source code\n", argv[0]);
+				exit(0);
+				break;
+			case 'v':
+				// version
+				printf("%s\n", VERSION_S);
 				exit(0);
 				break;
 		}
