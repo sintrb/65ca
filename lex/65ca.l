@@ -221,6 +221,9 @@ fill {
 	}
 }
 
+\.INC|\.INCLUDE {
+	RETTOKEN(CMD_INC);
+}
 
 \"[^\"]*\" {
 	// RETTOKEN(STR);
