@@ -12,6 +12,10 @@ Robin 2014-05-06
 #define MALLOC malloc
 #endif
 
+#ifndef FREE
+#define FREE free
+#endif
+
 // begin link
 t_link link_newlink(int size){
 	return link_newnode(size);
@@ -23,8 +27,9 @@ struct linknode * link_newnode(int size){
 }
 struct linknode * link_addnew(t_link link, int size){
 	struct linknode * node = (struct linknode *)MALLOC(size);
-	link->prev->next = node;
 	node->prev = link->prev;
+	link->prev->next = node;
+	
 
 	node->next = link;
 	link->prev = node;
@@ -47,6 +52,36 @@ struct listnode * list_add(t_list list, void *data){
 }
 
 // end list
+
+
+// begin stack
+
+t_stack stack_newstack(){
+	return (t_stack)link_newlink(sizeof(struct stacknode));
+}
+
+struct stacknode * stack_push(t_stack stack, const void *data){
+	struct stacknode * node = (struct stacknode *)link_addnew((t_link)stack,sizeof(struct stacknode));
+	node->data = (void *)data;
+	return node;
+}
+
+void * stack_pop(t_stack stack){
+	t_link ln = (t_link) stack;
+	void *data;
+	struct stacknode *node;
+	if(ln->prev!=ln){
+		node = (struct stacknode *)ln->prev;
+		data = node->data;
+		
+		ln->prev->prev->next = ln;
+		ln->prev = ln->prev->prev;
+		FREE(node);
+		return data;
+	}
+	return NULL;
+}
+// end stack
 
 // begin string
 

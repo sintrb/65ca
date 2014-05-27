@@ -5,7 +5,7 @@ Robin 2014-05-06
 
 #ifndef BASEFUNS_H
 #define BASEFUNS_H
-
+#include "define.h"
 // 链表
 
 struct linknode
@@ -43,10 +43,10 @@ struct linknode * link_addnew(t_link link, int size);
 // end 链表
 
 
-// begin List
+// begin 列表
 struct listnode
 {
-	struct linknode *link;
+	struct linknode link;
 	void *data;
 };
 
@@ -67,11 +67,27 @@ struct listnode * list_add(t_list list, void *data);
 		_handle;\
 	})
 
-// end List
+// end 列表
 
 
 
+// begin 栈
+struct stacknode
+{
+	struct linknode link;
+	void *data;
+};
 
+typedef struct stacknode * t_stack;
+
+// 创建新列表
+t_stack stack_newstack();
+
+// 添加一项
+struct stacknode * stack_push(t_stack stack, const void *data);
+
+void * stack_pop(t_stack stack);
+// end 栈
 
 
 
