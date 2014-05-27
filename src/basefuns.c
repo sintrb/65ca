@@ -73,10 +73,22 @@ void * stack_pop(t_stack stack){
 	if(ln->prev!=ln){
 		node = (struct stacknode *)ln->prev;
 		data = node->data;
-		
+
 		ln->prev->prev->next = ln;
 		ln->prev = ln->prev->prev;
 		FREE(node);
+		return data;
+	}
+	return NULL;
+}
+
+void * stack_top(t_stack stack){
+	t_link ln = (t_link) stack;
+	void *data;
+	struct stacknode *node;
+	if(ln->prev!=ln){
+		node = (struct stacknode *)ln->prev;
+		data = node->data;
 		return data;
 	}
 	return NULL;

@@ -80,15 +80,22 @@ struct stacknode
 
 typedef struct stacknode * t_stack;
 
-// 创建新列表
+// 创建新栈
 t_stack stack_newstack();
 
-// 添加一项
+// 入栈
 struct stacknode * stack_push(t_stack stack, const void *data);
 
+// 出栈
 void * stack_pop(t_stack stack);
+
+// 获取栈顶元素
+void * stack_top(t_stack stack);
 // end 栈
 
+// begin 文件目录
+// char *dir_cur()
+// end 文件目录
 
 
 // begin 字符串操作
