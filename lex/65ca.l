@@ -165,6 +165,8 @@ ${HEX}{2} {
 "$" { RETTOKEN(DOLLAR); }
 " " {}
 
+\"[^"]*\" { RETTOKEN(STR); }
+
 \.ORG { RETTOKEN(CMD_ORG); }
 
 \.LAB|\.LABEL {

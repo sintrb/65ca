@@ -25,7 +25,7 @@
 %token ERR
 
 // var
-%token IDENT
+%token IDENT STR
 
 // address
 %token NONE 200 NUM 201 ZPADDR 202 ADDR 203 XADDR 204 YADDR 205 XZPADDR 206 YZPADDR 207 IDIRADDR 208 XIDIRADDR 209 YIDIRADDR 210 READDR 211
@@ -59,6 +59,7 @@
 
 %type <val> ident addr
 %type <name> iname
+%type <name> string
 %type <token> ins
 %type <dlist> datalist
 %%
@@ -259,15 +260,19 @@ command
 		M_SETCURADDR($2->value);
 	}
 	| CMD_INFO iname {
+		// .info
 		cmd_info($2);
 		FREE($2);
 	}
 	| CMD_SEG iname {
+		// .seg
 		cmd_seg($2);
 		FREE($2);
 	}
-	| CMD_INC iname {
+	| CMD_INC string {
 		// .include
+		cmd_inc($2);
+		FREE($2);
 	}
 	| cmdlabel
 	| cmd_segdef
@@ -302,22 +307,27 @@ cmdlabel
 
 cmd_segdef
 	: CMD_DEFSEG {
+		// .defseg
 		curdefseg = segment_new();
 	}
 	| CMD_DEFSEG_NAME EQUAL iname {
+		// name = name
 		curdefseg->name = $3;
 	}
 	| CMD_DEFSEG_START EQUAL ident {
+		// start = start
 		CHECKVO($3);
 		curdefseg->start = $3->value;
 		valobj_release($3);
 	}
 	| CMD_DEFSEG_SIZE EQUAL ident {
+		// size = size
 		CHECKVO($3);
 		curdefseg->size = $3->value;
 		valobj_release($3);
 	}
 	| CMD_DEFSEG_FILL EQUAL ident {
+		// fill = fill
 		CHECKVO($3);
 		curdefseg->fill = $3->value;
 		valobj_release($3);
@@ -326,6 +336,7 @@ cmd_segdef
 
 cmd_dat
 	: CMD_DAT datalist {
+		// .dat
 		cmd_dat($2);
 	}
 ;
@@ -340,6 +351,13 @@ datalist
 		list_add($$, $1);
 	}
 ;
+
+
+string
+	: STR {
+		$$ = str_clone(yytext);
+	}
+
 %%
 
 
