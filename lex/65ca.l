@@ -4,7 +4,6 @@
 #include "65ca.tab.h"
 #include "define.h"
 #include "functions.h"
-
 #include "segment.h"
 
 #define RETTOKEN(t) D(#t);return t;
