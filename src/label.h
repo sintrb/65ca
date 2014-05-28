@@ -25,6 +25,7 @@ struct labeltask
 	struct filepos filepos;
 	struct segment *segment;
 	t_value addr;
+	t_token token;
 };
 
 #define valobj_info(_vo) D("(%s ref:%d)", (_vo)->label ? (_vo)->label->name:"", (_vo)->refcount);
@@ -60,7 +61,7 @@ void label_init();
 struct label * label_new();
 
 // 创建标签任务
-struct labeltask *label_newtask();
+struct labeltask *label_newtask(t_token t);
 
 // 获取标签
 struct label * label_get(const char *name, t_bool autoadd);

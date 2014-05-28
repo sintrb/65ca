@@ -29,11 +29,12 @@ struct label * label_new(){
 	return lab;
 }
 
-struct labeltask *label_newtask(){
+struct labeltask *label_newtask(t_token t){
 	struct labeltask * tsk =(struct labeltask *)MALLOC(sizeof(struct labeltask));
 	tsk->filepos = filepos_curpos();
 	tsk->segment = curseg;
 	tsk->addr = curseg->start + curseg->index;
+	tsk->token = t;
 	return tsk;
 }
 
@@ -74,7 +75,7 @@ void label_dotask(struct label *lab){
 		struct labeltask * task;
 		struct valobj *val = lab->val;
 		list_each(struct labeltask *, lab->tasks, next, task, {
-			switch(lab->val->token){
+			switch(task->token){
 				case NUM:
 				case ZPADDR:
 				case XZPADDR:
@@ -107,11 +108,11 @@ void label_dotask(struct label *lab){
 }
 
 void label_detail(struct label * lab){
-	O("{%s v:%04x ref:%d kwn:%c}\n", lab->name, lab->val->value, lab->val->refcount, lab->status == LABEL_STATUS_KNOWN?'Y':'N');
+	O("{%s t:%d v:%04x ref:%d kwn:%c}\n", lab->name, lab->val->token, lab->val->value, lab->val->refcount, lab->status == LABEL_STATUS_KNOWN?'Y':'N');
 	if(lab->tasks){
 		struct listnode * next;
 		struct labeltask * task;
-		list_each(struct labeltask *, lab->tasks, next, task, D("\tseg:%s addr:$%04x %s(%d)\n", task->segment->name, task->addr, task->filepos.filename, task->filepos.lineno));
+		list_each(struct labeltask *, lab->tasks, next, task, D("\t t:%d seg:%s addr:$%04x %s(%d)\n", task->token, task->segment->name, task->addr, task->filepos.filename, task->filepos.lineno));
 		O("\n");
 	}
 }
