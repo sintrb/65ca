@@ -80,4 +80,7 @@ void cmd_seg(const char *name);
 // 写入数据
 void cmd_dat(t_list list);
 
+// 包含文件
+void cmd_inc(const char *name);
+
 #endif

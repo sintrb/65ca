@@ -28,6 +28,9 @@ void init(){
 	instab_init();
 	segment_init();
 	label_init();
+
+
+	// cmd_inc(infile);
 }
 
 void destory(){
@@ -56,6 +59,14 @@ struct label * cmd_label(const char *name, struct valobj *val){
 	struct mapnode * node = map_get(labels, name);
 	struct label *lab = NULL;
 	struct valobj *newval = NULL;
+	if(!val){
+		// lab:
+		// address label
+		newval = label_newval(ADDR, CURADDR);
+	}
+	else{
+		newval = label_newval(val->token, val->value);
+	}
 	if(node){
 		// already define
 		lab = (struct label *)node->data;
@@ -65,21 +76,11 @@ struct label * cmd_label(const char *name, struct valobj *val){
 		else{
 			lab->filepos = filepos_curpos();
 			lab->status = LABEL_STATUS_KNOWN;
-			valobj_retain(val);
-			lab->val = val;
+			lab->val = newval;
 			label_dotask(lab);
 		}
 	}
 	else{
-		if(!val){
-			// lab:
-			// address label
-			newval = label_newval(ADDR, CURADDR);
-		}
-		else{
-			newval = label_newval(val->token, val->value);
-		}
-		
 		lab = label_new();
 		lab->val = newval;
 		lab->name = str_clone(name);
@@ -101,15 +102,6 @@ struct filepos filepos_curpos(){
 
 void ins_compile(t_token ins, struct valobj *val){
 	struct insobj * io = NULL;
-	if(val && val && val->label && val->label->status != LABEL_STATUS_KNOWN){
-		if(val->token == ADDR){
-			// add task
-			D("PRE(%s)", val->label->name);
-		}
-		else{
-			M_ERROR("unknown name:%s", val->label->name);
-		}
-	}
 	io = instab_get(ins, !val? NONE: val->token);
 	if(!io && val && val->token == ADDR){
 		io = instab_get(ins, READDR);
@@ -135,7 +127,7 @@ void ins_compile(t_token ins, struct valobj *val){
 			}
 			else{
 				// add task
-				label_addtask(val->label, label_newtask());
+				label_addtask(val->label, label_newtask(io->addr));
 				segment_skip(curseg, 1);
 			}
 			break;
@@ -151,7 +143,7 @@ void ins_compile(t_token ins, struct valobj *val){
 			}
 			else{
 				// add task
-				label_addtask(val->label, label_newtask());
+				label_addtask(val->label, label_newtask(io->addr));
 				segment_skip(curseg, 2);
 			}
 			break;
@@ -163,7 +155,7 @@ void ins_compile(t_token ins, struct valobj *val){
 			}
 			else{
 				// add task
-				label_addtask(val->label, label_newtask());
+				label_addtask(val->label, label_newtask(io->addr));
 				segment_skip(curseg, 1);
 			}
 			break;
@@ -235,6 +227,7 @@ void cmd_seg(const char *name){
 void cmd_dat(t_list list){
 	struct listnode * next;
 	struct valobj * val;
+	char * str;
 	M_CHECKCURSEG();
 	list_each(struct valobj *, list, next, val, {
 		D("%04x ", val->value);
@@ -246,7 +239,7 @@ void cmd_dat(t_list list){
 				}
 				else{
 					// add task
-					label_addtask(val->label, label_newtask());
+					label_addtask(val->label, label_newtask(val->token));
 					segment_skip(curseg, 1);
 				}
 				break;
@@ -258,9 +251,18 @@ void cmd_dat(t_list list){
 				}
 				else{
 					// add task
-					label_addtask(val->label, label_newtask());
+					label_addtask(val->label, label_newtask(val->token));
 					segment_skip(curseg, 2);
 				}
+				break;
+			}
+			case STR:{
+				str = val->label->name + 1;
+				while(*(str+1)){
+					segment_write(curseg, *str&0x00ff);
+					++str;
+				}
+				segment_write(curseg, 0);
 				break;
 			}
 			default:{
@@ -271,3 +273,7 @@ void cmd_dat(t_list list){
 	O("\n");
 }
 
+
+void cmd_inc(const char *name){
+	D("inc: %s", name);
+}
