@@ -59,7 +59,6 @@
 
 %type <val> ident addr
 %type <name> iname
-%type <name> string
 %type <token> ins
 %type <dlist> datalist
 %%
@@ -210,6 +209,13 @@ ident
 	| OCT {
 		$$ = label_newval(NUM, atoi(yytext));
 	}
+	| STR {
+		$$ = label_newval(STR, 0);
+		$$->label = label_new();
+		$$->label->val = $$;
+		$$->label->name = str_clone(yytext);
+		$$->label->status = LABEL_STATUS_KNOWN;
+	}
 	| iname {
 		$$ = label_get($1, true)->val;
 		valobj_retain($$);
@@ -269,10 +275,10 @@ command
 		cmd_seg($2);
 		FREE($2);
 	}
-	| CMD_INC string {
+	| CMD_INC ident {
 		// .include
-		cmd_inc($2);
-		FREE($2);
+		// cmd_inc($2);
+		// FREE($2);
 	}
 	| cmdlabel
 	| cmd_segdef
@@ -342,21 +348,15 @@ cmd_dat
 ;
 
 datalist
-	: ident datalist {
-		$$=$2;
-		list_add($2, $1);
+	: datalist ident {
+		$$=$1;
+		list_add($1, $2);
 	}
 	| ident {
 		$$ = list_newlist();
 		list_add($$, $1);
 	}
 ;
-
-
-string
-	: STR {
-		$$ = str_clone(yytext);
-	}
 
 %%
 

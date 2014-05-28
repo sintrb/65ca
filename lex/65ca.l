@@ -40,7 +40,7 @@ NL [;\n\r]
 	*/
 }
 
-"//" {
+\/\/.*\n {
 	/*
 	int c = 0;
 	while(c != '\n' && c != EOF)
@@ -165,7 +165,7 @@ ${HEX}{2} {
 "$" { RETTOKEN(DOLLAR); }
 " " {}
 
-\"[^"]*\" { RETTOKEN(STR); }
+\"[^\"]*\" { RETTOKEN(STR); }
 
 \.ORG { RETTOKEN(CMD_ORG); }
 
@@ -225,10 +225,6 @@ fill {
 
 \.INC|\.INCLUDE {
 	RETTOKEN(CMD_INC);
-}
-
-\"[^\"]*\" {
-	// RETTOKEN(STR);
 }
 
 {IDENTPRE}{IDENTSUF}* {
