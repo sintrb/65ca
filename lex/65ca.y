@@ -277,8 +277,12 @@ command
 	}
 	| CMD_INC ident {
 		// .include
-		// cmd_inc($2);
-		// FREE($2);
+		if($2->label){
+			cmd_inc($2->label->name);
+			FREE($2->label->name);
+			FREE($2->label);
+		}
+		FREE($2);
 	}
 	| cmdlabel
 	| cmd_segdef
