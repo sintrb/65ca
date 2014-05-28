@@ -11,7 +11,8 @@ Robin 2014-05-05
 #include "label.h"
 #include "instab.h"
 #include "segment.h"
-
+#include "fileio.h"
+#include "incfile.h"
 
 // t_value curval = 0x00;
 // t_value curaddr = 0x0000;
@@ -28,9 +29,9 @@ void init(){
 	instab_init();
 	segment_init();
 	label_init();
-
-
-	// cmd_inc(infile);
+	incfile_init();
+	if(infile)
+		cmd_inc(infile);
 }
 
 void destory(){
@@ -275,5 +276,20 @@ void cmd_dat(t_list list){
 
 
 void cmd_inc(const char *name){
-	D("inc: %s", name);
+	struct filestate * fs = NULL;
+	struct filestate * top = (struct filestate *)stack_top(files);
+	fs = (struct filestate*)MALLOC(sizeof(struct filestate));
+	fs->name = fileio_abspath(top?top->name:NULL, name);
+	fs->file = fileio_open(fs->name, "r");
+
+	D("inc: %s\n", fs->name);
+	
+	fs->name = str_clone(name);
+	if(!top){
+		D("first\n");
+	}
+	else{
+
+	}
+	stack_push(files, fs);
 }

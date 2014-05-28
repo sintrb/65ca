@@ -43,11 +43,11 @@ int main(int argc, char *argv[])
 		exit(1);
 	}
 	if(!outfile){
-		outfile = (char*)MALLOC(256);
+		outfile = (char*)MALLOC(strlen(infile)+4);
 		sprintf(outfile, "%s.bin", infile);
 	}
 	printf("%s-->65ca-->%s\n", infile, outfile);
-	exit(0);
+	// exit(0);
 	init();
 	yyparse();
 	destory();
