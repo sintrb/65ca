@@ -4,10 +4,12 @@
 .seg ROM
 lda #$1
 
-.info ROM
+//.info ROM
 
 
 
 
 //.info ROM
 
+
+.info

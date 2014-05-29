@@ -266,9 +266,13 @@ command
 		M_SETCURADDR($2->value);
 	}
 	| CMD_INFO iname {
-		// .info
+		// .info name
 		cmd_info($2);
 		FREE($2);
+	}
+	| CMD_INFO {
+		// .info
+		cmd_info(NULL);
 	}
 	| CMD_SEG iname {
 		// .seg

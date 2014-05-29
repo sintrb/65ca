@@ -206,6 +206,11 @@ void cmd_end_defseg(){
 
 void cmd_info(const char *name){
 	struct mapnode * node = NULL;
+	if(name==NULL){
+		struct filepos pos = filepos_curpos();
+		D("file:%s line:%d segment:%s\n", pos.filename, pos.lineno, curseg->name);
+		return;
+	}
 	node = map_get(segments, name);
 	if(node)
 		segment_detail((struct segment*)node->data);
@@ -282,6 +287,7 @@ void cmd_inc(const char *name){
 	fs->name = fileio_abspath(top?top->name:NULL, name);
 	fs->file = fileio_open(fs->name, "r");
 	fs->state = yy_create_buffer(fs->file, YY_BUF_SIZE);
+	fs->lineno = yyget_lineno();
 	D("inc: %s\n", fs->name);
 	
 	fs->name = str_clone(name);

@@ -19,6 +19,7 @@ struct filestate
 	char *name;
 	FILE *file;
 	YY_BUFFER_STATE state;
+	int lineno;
 };
 
 extern t_stack files;
