@@ -83,4 +83,6 @@ void cmd_dat(t_list list);
 // 包含文件
 void cmd_inc(const char *name);
 
+// 结束包含
+void cmd_eof();
 #endif

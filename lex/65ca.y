@@ -41,10 +41,10 @@
 
 
 // command
-%token CMD_ORG CMD_LAB CMD_DEFSEG CMD_INFO CMD_SEG CMD_DAT CMD_INC
+%token CMD_ORG CMD_LAB CMD_DEFSEG CMD_INFO CMD_SEG CMD_DAT CMD_INC CMD_EOF
 
 // defseg
-%token CMD_DEFSEG_NAME CMD_DEFSEG_START CMD_DEFSEG_SIZE CMD_DEFSEG_FILL
+%token CMD_DEFSEG_NAME CMD_DEFSEG_START CMD_DEFSEG_SIZE CMD_DEFSEG_FILL 
 
 // cal
 %token ADD SUB DIV MUL
@@ -278,11 +278,15 @@ command
 	| CMD_INC ident {
 		// .include
 		if($2->label){
-			cmd_inc($2->label->name);
+			$2->label->name[strlen($2->label->name)-1]='\0';
+			cmd_inc($2->label->name+1);
 			FREE($2->label->name);
 			FREE($2->label);
 		}
 		FREE($2);
+	}
+	| CMD_EOF {
+		cmd_eof();
 	}
 	| cmdlabel
 	| cmd_segdef

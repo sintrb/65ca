@@ -281,7 +281,7 @@ void cmd_inc(const char *name){
 	fs = (struct filestate*)MALLOC(sizeof(struct filestate));
 	fs->name = fileio_abspath(top?top->name:NULL, name);
 	fs->file = fileio_open(fs->name, "r");
-
+	fs->state = yy_create_buffer(fs->file, YY_BUF_SIZE);
 	D("inc: %s\n", fs->name);
 	
 	fs->name = str_clone(name);
@@ -291,5 +291,33 @@ void cmd_inc(const char *name){
 	else{
 
 	}
+	yy_switch_to_buffer(fs->state);
+	yyrestart(fs->file);
+
 	stack_push(files, fs);
+}
+
+void cmd_eof(){
+	struct filestate * fs = (struct filestate *)stack_pop(files);
+	if(fs){
+		D("end of:%s", fs->name);
+		fclose(fs->file);
+		yy_delete_buffer(fs->state);
+		FREE(fs->name);
+		FREE(fs);
+	}
+	fs = (struct filestate *)stack_top(files);
+	if(fs){
+		// return to file
+		MARK();
+		D("back: %s", fs->name);
+		yy_switch_to_buffer(fs->state);
+		// yyrestart(fs->file);
+		yyin = fs->file;
+		MARK();
+	}
+	else{
+		// end
+		exit(0);
+	}
 }

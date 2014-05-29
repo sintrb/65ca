@@ -235,4 +235,8 @@ fill {
 	return NL;
 }
 
+<<EOF>> {
+	RETTOKEN(CMD_EOF);
+}
+
 %%

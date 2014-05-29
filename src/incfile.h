@@ -18,7 +18,7 @@ struct filestate
 {
 	char *name;
 	FILE *file;
-	YY_BUFFER_STATE bufstate;
+	YY_BUFFER_STATE state;
 };
 
 extern t_stack files;
