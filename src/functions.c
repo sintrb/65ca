@@ -96,7 +96,8 @@ struct label * cmd_label(const char *name, struct valobj *val){
 
 struct filepos filepos_curpos(){
 	struct filepos pos;
-	pos.filename = str_clone(curfile);
+	struct filestate * top = (struct filestate *)stack_top(files);
+	pos.filename = top?top->name:NULL;
 	pos.lineno = curlineno;
 	return pos;
 }
@@ -287,15 +288,16 @@ void cmd_inc(const char *name){
 	fs->name = fileio_abspath(top?top->name:NULL, name);
 	fs->file = fileio_open(fs->name, "r");
 	fs->state = yy_create_buffer(fs->file, YY_BUF_SIZE);
-	fs->lineno = yyget_lineno();
-	D("inc: %s\n", fs->name);
+	fs->lineno = 1;
+	D("\ninc: %s\n", fs->name);
 	
-	fs->name = str_clone(name);
+	//fs->name = str_clone(name);
 	if(!top){
 		D("first\n");
+		yyset_lineno(fs->lineno);
 	}
 	else{
-
+		top->lineno = yyget_lineno();
 	}
 	yy_switch_to_buffer(fs->state);
 	yyrestart(fs->file);
@@ -306,7 +308,7 @@ void cmd_inc(const char *name){
 void cmd_eof(){
 	struct filestate * fs = (struct filestate *)stack_pop(files);
 	if(fs){
-		D("end of:%s", fs->name);
+		D("\nend of:%s\n", fs->name);
 		fclose(fs->file);
 		yy_delete_buffer(fs->state);
 		FREE(fs->name);
@@ -315,15 +317,17 @@ void cmd_eof(){
 	fs = (struct filestate *)stack_top(files);
 	if(fs){
 		// return to file
-		MARK();
-		D("back: %s", fs->name);
+		D("\nback: %s\n", fs->name);
+		yyset_lineno(fs->lineno);
 		yy_switch_to_buffer(fs->state);
 		// yyrestart(fs->file);
 		yyin = fs->file;
-		MARK();
 	}
 	else{
 		// end
+		FREE(infile);
+		FREE(outfile);
+		printf("compile success!!!\n");
 		exit(0);
 	}
 }

@@ -50,10 +50,6 @@ int main(int argc, char *argv[])
 	// exit(0);
 	init();
 	yyparse();
-	destory();
-	FREE(infile);
-	FREE(outfile);
-	printf("compile success!!!\n");
 	return 0;
 }
 
