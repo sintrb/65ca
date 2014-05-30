@@ -289,19 +289,13 @@ void cmd_inc(const char *name){
 	fs->file = fileio_open(fs->name, "r");
 	fs->state = yy_create_buffer(fs->file, YY_BUF_SIZE);
 	fs->lineno = 1;
-	D("\ninc: %s\n", fs->name);
 	
-	//fs->name = str_clone(name);
-	if(!top){
-		D("-----------first\n");
-	}
-	else{
+	if(top){
 		top->lineno = yyget_lineno();
 	}
 	yyset_lineno(fs->lineno);
 	yy_switch_to_buffer(fs->state);
-	//yyrestart(fs->file);
-
+	yyrestart(fs->file);
 
 	stack_push(files, fs);
 }
@@ -309,7 +303,6 @@ void cmd_inc(const char *name){
 void cmd_eof(){
 	struct filestate * fs = (struct filestate *)stack_pop(files);
 	if(fs){
-		D("\nend of:%s\n", fs->name);
 		fclose(fs->file);
 		yy_delete_buffer(fs->state);
 		FREE(fs->name);
@@ -317,8 +310,7 @@ void cmd_eof(){
 	}
 	fs = (struct filestate *)stack_top(files);
 	if(fs){
-		// return to file
-		D("\nback: %s\n", fs->name);
+		// back to file
 		yyset_lineno(fs->lineno);
 		yy_switch_to_buffer(fs->state);
 		// yyrestart(fs->file);

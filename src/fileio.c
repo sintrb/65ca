@@ -18,7 +18,6 @@ Robin 2014-05-19
 
 FILE *fileio_open(const char *filename, const char *type){
 	FILE *fp = fopen(filename, type);
-	D("--OPEN: %s : %s\n", filename, type);
 	if(!fp){
 		M_ERROR("open %s failed", filename);
 	}
