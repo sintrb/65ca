@@ -65,7 +65,7 @@
 
 lines 
 	: lines line
-	| line
+	| line 
 ;
 
 line

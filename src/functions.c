@@ -209,7 +209,7 @@ void cmd_info(const char *name){
 	struct mapnode * node = NULL;
 	if(name==NULL){
 		struct filepos pos = filepos_curpos();
-		D("file:%s line:%d segment:%s\n", pos.filename, pos.lineno, curseg->name);
+		O("file:%s line:%d segment:%s\n", pos.filename, pos.lineno, curseg?curseg->name:"NONE");
 		return;
 	}
 	node = map_get(segments, name);
@@ -293,14 +293,15 @@ void cmd_inc(const char *name){
 	
 	//fs->name = str_clone(name);
 	if(!top){
-		D("first\n");
-		yyset_lineno(fs->lineno);
+		D("-----------first\n");
 	}
 	else{
 		top->lineno = yyget_lineno();
 	}
+	yyset_lineno(fs->lineno);
 	yy_switch_to_buffer(fs->state);
-	yyrestart(fs->file);
+	//yyrestart(fs->file);
+
 
 	stack_push(files, fs);
 }

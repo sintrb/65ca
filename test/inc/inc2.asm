@@ -1,2 +1,2 @@
+lda #$ff
 .info
-
