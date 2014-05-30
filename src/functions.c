@@ -317,6 +317,19 @@ void cmd_eof(){
 	}
 	else{
 		// end
+		char *name = fileio_abspath(NULL, outfile);
+		FILE *fp = fileio_open(name, "wb");
+		FREE(name);
+		struct mapnode * next;
+		struct segment *seg;
+		link_each(t_map, segments, next, {
+			seg = (struct segment *)(next->data);
+			fwrite(seg->data, 1, seg->size, fp);
+			D("--->%s\n", seg->name);
+		});
+		fclose(fp);
+
+
 		FREE(infile);
 		FREE(outfile);
 		printf("compile success!!!\n");
