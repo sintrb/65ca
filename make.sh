@@ -13,7 +13,8 @@ clear
 cd lex
 bison --output ../src/65ca.tab.c -d 65ca.y
 cd ../src
-flex ../lex/65ca.l
+flex --header-file=lex.yy.h ../lex/65ca.l
 gcc -o ../bin/65ca.exe *.c
 cd ..
-cat test/test.asm | bin/65ca.exe
+# cat test/test.asm | bin/65ca.exe
+bin/65ca.exe test/test.asm
