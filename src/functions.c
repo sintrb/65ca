@@ -313,7 +313,6 @@ void cmd_eof(){
 		// back to file
 		yyset_lineno(fs->lineno);
 		yy_switch_to_buffer(fs->state);
-		// yyrestart(fs->file);
 		yyin = fs->file;
 	}
 	else{
