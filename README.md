@@ -26,6 +26,27 @@ A 6502CPU Assembler.
 
 ### V1.1.2
 
+时间：2014-06-03
+
+说明：
+
+* 修改计算相对路径bug
+* 添加包含二进制文件 .incbin
+
+用例：
+
+```
+.defseg name=HEAD size=16 fill=#$00 start=0
+.defseg name=ROM size=16 fill=#$00 start=0
+.inc "common.asm"
+.seg HEAD
+.dat $#4E $#45 $#53 $#1A $#02 $#01 $#03 $#00 $#00 $#00 $#00 $#00 $#00 $#00 $#00 $#00
+.
+```
+
+
+### V1.1.2
+
 时间：2014-05-30
 
 说明：
