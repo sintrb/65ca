@@ -36,12 +36,25 @@ A 6502CPU Assembler.
 用例：
 
 ```
-.defseg name=HEAD size=16 fill=#$00 start=0
-.defseg name=ROM size=16 fill=#$00 start=0
+.defseg name=HEAD size=16 fill=#$00 start=0 //HEAD
+.defseg name=PROM size=32*1024 fill=#$00 start=0 // PROM, 32K
+.defseg name=VROM size=8*1024 fill=#$00 start=0 // PROM, 32K
 .inc "common.asm"
 .seg HEAD
 .dat $#4E $#45 $#53 $#1A $#02 $#01 $#03 $#00 $#00 $#00 $#00 $#00 $#00 $#00 $#00 $#00
-.
+
+.seg PROM // 选择PROM
+start:
+ lda #$0
+ sta $00
+ jmp start
+
+.org $fffa
+.dat start start
+
+
+.seg VROM // 选择VROM
+.incbin "ascii.chr" // 保护二进制文件
 ```
 
 
