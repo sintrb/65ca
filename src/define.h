@@ -9,7 +9,7 @@ Robin 2014-05-05
 #define VERSION_I	112
 #define VERSION_S	"1.1.2"
 
-// #define DEBUG_MODE 1
+#define DEBUG_MODE 1
 
 
 #define MALLOC(_size) malloc(_size)

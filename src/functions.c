@@ -16,8 +16,8 @@ Robin 2014-05-05
 
 // t_value curval = 0x00;
 // t_value curaddr = 0x0000;
-char * curfile = "test.asm";
-char curident[256];
+char * curfile = NULL;
+// char curident[256];
 
 FILE *fp = NULL;
 
@@ -102,16 +102,40 @@ struct filepos filepos_curpos(){
 	return pos;
 }
 
+t_token getvaltoken(struct valobj *val){
+	t_token tk = NONE;
+	if(val){
+		switch(val->token){
+			case OCT:
+			case ADDR:
+			case NUM:
+				tk = ADDR;
+				break;
+			case HEX:
+			case ZPADDR:
+			case BIN:
+				tk = NUM;
+				break;
+			default:
+				tk = val->token;
+		}
+	}
+	return tk;
+}
+
 void ins_compile(t_token ins, struct valobj *val){
+	MARK();
 	struct insobj * io = NULL;
-	io = instab_get(ins, !val? NONE: val->token);
-	if(!io && val && val->token == ADDR){
+	t_token tk = getvaltoken(val);
+	io = instab_get(ins, tk);
+	if(!io && tk == ADDR){
 		io = instab_get(ins, READDR);
 	}
 	if(!io){
 		M_ERROR("sys error ins:%d", ins);
 	}
 	M_CHECKCURSEG();
+	MARK();
 	switch(io->addr){
 		case NONE:{
 			segment_write(curseg, io->code);
@@ -123,6 +147,7 @@ void ins_compile(t_token ins, struct valobj *val){
 		case YZPADDR:
 		case XIDIRADDR:
 		case YIDIRADDR:{
+			MARK();
 			segment_write(curseg, io->code);
 			if(!val->label || val->label->status == LABEL_STATUS_KNOWN){
 				segment_write(curseg, val->value);
@@ -138,6 +163,7 @@ void ins_compile(t_token ins, struct valobj *val){
 		case XADDR:
 		case YADDR:
 		case IDIRADDR:{
+			MARK();
 			segment_write(curseg, io->code);
 			if(!val->label || val->label->status == LABEL_STATUS_KNOWN){
 				segment_write(curseg, val->value&0x00ff);
@@ -145,12 +171,15 @@ void ins_compile(t_token ins, struct valobj *val){
 			}
 			else{
 				// add task
+				MARK();
 				label_addtask(val->label, label_newtask(io->addr));
 				segment_skip(curseg, 2);
+				MARK();
 			}
 			break;
 		}
 		case READDR:{
+			MARK();
 			segment_write(curseg, io->code);
 			if(!val->label || val->label->status == LABEL_STATUS_KNOWN){
 				segment_write(curseg, cal_readdr(CURADDR,val->value));
@@ -163,9 +192,10 @@ void ins_compile(t_token ins, struct valobj *val){
 			break;
 		}
 		default:{
-			M_ERROR("unknow addr token(%d)", io->addr);
+			M_ERROR("unknow ins addr token(%d)", io->addr);
 		}
 	}
+	MARK();
 }
 
 void cmd_end_defseg(){
@@ -238,7 +268,7 @@ void cmd_dat(t_list list){
 	M_CHECKCURSEG();
 	list_each(struct valobj *, list, next, val, {
 		D("%04x ", val->value);
-		switch(val->token){
+		switch(getvaltoken(val)){
 			case NUM:
 			case ZPADDR:{
 				if(!val->label || val->label->status == LABEL_STATUS_KNOWN){
@@ -273,7 +303,7 @@ void cmd_dat(t_list list){
 				break;
 			}
 			default:{
-				M_ERROR("unknow data token(%d)", val->token);
+				M_ERROR("unknow data i token(%d) value(%04x)", val->token, val->value);
 			}
 		}
 	});
@@ -296,7 +326,7 @@ void cmd_inc(const char *name){
 	yyset_lineno(fs->lineno);
 	yy_switch_to_buffer(fs->state);
 	yyrestart(fs->file);
-
+	curfile = fs->name;
 	stack_push(files, fs);
 }
 

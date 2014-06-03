@@ -49,6 +49,7 @@ NL [;\n\r]
 			D("\n");
 	#endif
 	*/
+	curlinetype = LINETYPE_NORMAL;
 }
 
 
@@ -112,6 +113,9 @@ BRK { RETTOKEN(BRK); }
 
 ;NUMBER
 \#\${HEX}+ {
+	RETTOKEN(HEX);
+}
+\#{HEX}+ {
 	RETTOKEN(HEX);
 }
 \%{BIN}+ {

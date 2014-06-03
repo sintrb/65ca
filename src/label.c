@@ -63,10 +63,13 @@ struct label * label_get(const char *name, t_bool autoadd){
 }
 
 void label_addtask(struct label *lab, struct labeltask *tsk){
+	D("add to %s", lab->name);
 	if(!lab->tasks){
 		lab->tasks = list_newlist();
 	}
+	MARK();
 	list_add(lab->tasks, tsk);
+	MARK();
 }
 
 void label_dotask(struct label *lab){

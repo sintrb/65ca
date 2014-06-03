@@ -12,7 +12,7 @@ Robin 2014-05-05
 
 
 // extern t_value curval;
-extern t_value curaddr;
+// extern t_value curaddr;
 extern char * curfile;
 // extern char curident[256];
 

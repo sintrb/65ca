@@ -46,7 +46,7 @@ void segment_write(struct segment *seg, t_value val){
 }
 
 void segment_setaddr(struct segment *seg, t_value addr){
-	if(addr<seg->start || addr>=(seg->start+seg->size)){
+	if(addr<seg->start || addr>(seg->start+seg->size)){
 		M_ERROR("$%04x out of segment(%s) address(%04x-%04x)", addr, seg->name, seg->start, seg->start+seg->size-1);
 	}
 	seg->index = addr-seg->start;

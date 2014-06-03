@@ -23,17 +23,23 @@ t_link link_newlink(int size){
 struct linknode * link_newnode(int size){
 	struct linknode * node = (struct linknode *)MALLOC(size);
 	node->next = node->prev = node;
+	D(" n:%p\n", node);
 	return node;
 }
 struct linknode * link_addnew(t_link link, int size){
+	MARK();
 	struct linknode * node = (struct linknode *)MALLOC(size);
+	MARK();
+	D(" l:%p\n", link);
+	D(" l->p:%p\n", link->prev);
 	node->prev = link->prev;
+	MARK();
 	link->prev->next = node;
 	
-
+	MARK();
 	node->next = link;
 	link->prev = node;
-
+	MARK();
 	return node;
 }
 
@@ -46,7 +52,9 @@ t_list list_newlist(){
 }
 
 struct listnode * list_add(t_list list, void *data){
+	MARK();
 	struct listnode * node = (struct listnode *)link_addnew((t_link)list,sizeof(struct listnode));
+	MARK();
 	node->data = data;
 	return node;
 }

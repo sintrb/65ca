@@ -201,13 +201,13 @@ ident
 		$$ = label_newval(ZPADDR, htoi(yytext+1));
 	}
 	| HEX {
-		$$ = label_newval(NUM, htoi(yytext+2));
+		$$ = label_newval(HEX, htoi(yytext[1]=='$'?yytext+2:yytext+1));
 	}
 	| BIN {
-		$$ = label_newval(NUM, btoi(yytext+1));
+		$$ = label_newval(BIN, btoi(yytext+1));
 	}
 	| OCT {
-		$$ = label_newval(NUM, atoi(yytext));
+		$$ = label_newval(OCT, atoi(yytext));
 	}
 	| STR {
 		$$ = label_newval(STR, 0);
