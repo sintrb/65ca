@@ -26,6 +26,7 @@ struct label * label_new(){
 	lab->filepos = filepos_curpos();
 	lab->val = NULL;
 	lab->status = LABEL_STATUS_KNOWN;
+	lab->tasks = NULL;
 	return lab;
 }
 
@@ -68,6 +69,7 @@ void label_addtask(struct label *lab, struct labeltask *tsk){
 		lab->tasks = list_newlist();
 	}
 	MARK();
+	D(" l(%s)->ts:%p\n", lab->name, lab->tasks);
 	list_add(lab->tasks, tsk);
 	MARK();
 }

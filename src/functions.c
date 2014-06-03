@@ -172,6 +172,7 @@ void ins_compile(t_token ins, struct valobj *val){
 			else{
 				// add task
 				MARK();
+				D(" v->l:%p\n", val->label);
 				label_addtask(val->label, label_newtask(io->addr));
 				segment_skip(curseg, 2);
 				MARK();

@@ -1,5 +1,4 @@
 .include "head.inc"
-.seg ROM
 .label nbasic_stack = 256
 .label snake = 0
 .label drawer = 512
@@ -85,24 +84,21 @@
  jmp start
 
 data_str:
-	.dat #$89 #$79 #$85 #$32 #$76 #$79 #$83 #$69 #$0
-	.dat #$89 #$79 #$85 #$32 #$87 #$73 #$78 #$0
-	.dat #$60 #$60 #$32 #$71 #$82 #$69 #$69 #$68 #$89 #$32
-	.dat #$83 #$78 #$65 #$75 #$69 #$32 #$62 #$62 #$0
-	.dat #$71 #$65 #$77 #$69 #$32 #$76 #$69 #$86 #$69 #$76
-	.dat #$0
-	.dat #$89 #$79 #$85 #$32 #$80 #$65 #$83 #$83 #$0
-	.dat #$83 #$78 #$65 #$75 #$69 #$32 #$32 #$32 #$32 #$32
-	.dat #$32 #$80 #$65 #$83 #$83 #$0
-	.dat #$112 #$114 #$101 #$115 #$115 #$32 #$83 #$84 #$65 #$82
-	.dat #$84 #$46 #$0
-	.dat #$112 #$114 #$101 #$115 #$115 #$32 #$65 #$46 #$0
+	.dat #89 #79 #85 #32 #76 #79 #83 #69 #0
+	.dat #89 #79 #85 #32 #87 #73 #78 #0
+	.dat #60 #60 #32 #71 #82 #69 #69 #68 #89 #32
+	.dat #83 #78 #65 #75 #69 #32 #62 #62 #0
+	.dat #71 #65 #77 #69 #32 #76 #69 #86 #69 #76
+	.dat #0
+	.dat #89 #79 #85 #32 #80 #65 #83 #83 #0
+	.dat #83 #78 #65 #75 #69 #32 #32 #32 #32 #32
+	.dat #32 #80 #65 #83 #83 #0
+	.dat #112 #114 #101 #115 #115 #32 #83 #84 #65 #82
+	.dat #84 #46 #0
+	.dat #112 #114 #101 #115 #115 #32 #65 #46 #0
 
 start:
- .info vwait_start
  jsr vwait_start
- .info vwait_start
- .info vwait_start
  cld
  sei
  lda #32
@@ -1157,13 +1153,13 @@ joy_handler_4:
 
 add16:
 
-		lda add1_nl ;//mov a,add1_number_l
+		lda add1_nl
 		clc
-		adc add2_nl ;//add a,add2_number_l
-		sta add1_nl ;//mov add1_number_l,a
-		lda add1_nh ;//mov a,add1_number_h
-		adc add2_nh ;//addc a,add2_number_h
-		sta add1_nh ;//mov add1_number_h,a
+		adc add2_nl
+		sta add1_nl
+		lda add1_nh
+		adc add2_nh
+		sta add1_nh
 	 rts
 
 sub16:

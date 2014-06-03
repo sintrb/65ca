@@ -1,0 +1,101 @@
+
+C:\Documents and Settings\Administrator\桌面\github\65ca>cd bin 
+
+C:\Documents and Settings\Administrator\桌面\github\65ca\bin>del *.exe 
+
+C:\Documents and Settings\Administrator\桌面\github\65ca\bin>cd ..\lex 
+
+C:\Documents and Settings\Administrator\桌面\github\65ca\lex>del lex\*.c 
+
+C:\Documents and Settings\Administrator\桌面\github\65ca\lex>cd ..\src 
+
+C:\Documents and Settings\Administrator\桌面\github\65ca\src>del *.tab.c 
+
+C:\Documents and Settings\Administrator\桌面\github\65ca\src>del *.tab.h 
+
+C:\Documents and Settings\Administrator\桌面\github\65ca\src>del *.yy.h 
+
+C:\Documents and Settings\Administrator\桌面\github\65ca\src>cd .. 
+
+C:\Documents and Settings\Administrator\桌面\github\65ca>cls
+
+C:\Documents and Settings\Administrator\桌面\github\65ca>cd lex 
+
+C:\Documents and Settings\Administrator\桌面\github\65ca\lex>win_bison --output ../src/65ca.tab.c -d 65ca.y 
+
+C:\Documents and Settings\Administrator\桌面\github\65ca\lex>cd ..\src 
+
+C:\Documents and Settings\Administrator\桌面\github\65ca\src>win_flex --header-file=lex.yy.h ..\lex\65ca.l 
+
+C:\Documents and Settings\Administrator\桌面\github\65ca\src>gcc -o ..\bin\65ca.exe *.c 
+
+C:\Documents and Settings\Administrator\桌面\github\65ca\src>cd .. 
+
+C:\Documents and Settings\Administrator\桌面\github\65ca>REM type test\test.asm | bin\65ca.exe sin 
+
+C:\Documents and Settings\Administrator\桌面\github\65ca>bin\65ca.exe test\test.asm 
+ n:003E4898
+ n:003E58B8
+ n:003E58D0
+basefuns.c: 30basefuns.c: 32 l:003E58D0
+ l->p:003E58D0
+basefuns.c: 36basefuns.c: 39basefuns.c: 42CMD_DEFSEGCMD_DEFSEG_NAMEEQUALIDENTCMD_DEFSEG_SIZEEQUALOCTCMD_DEFSEG_FILLrelease( ref:1)free( ref:0)EQUALHEXCMD_DEFSEG_STARTrelease( ref:1)free( ref:0)EQUALADDRrelease( ref:1)free( ref:0)
+basefuns.c: 30basefuns.c: 32 l:003E4898
+ l->p:003E4898
+basefuns.c: 36basefuns.c: 39basefuns.c: 42JMPIDENTbasefuns.c: 30basefuns.c: 32 l:003E58B8
+ l->p:003E58B8
+basefuns.c: 36basefuns.c: 39basefuns.c: 42retain(start ref:1)functions.c: 127functions.c: 138functions.c: 166functions.c: 174 v->l:003E9CD8
+add to start n:003E9D68
+label.c: 71 l(start)->ts:003E9D68
+basefuns.c: 55basefuns.c: 30basefuns.c: 32 l:003E9D68
+ l->p:003E9D68
+basefuns.c: 36basefuns.c: 39basefuns.c: 42basefuns.c: 57label.c: 74functions.c: 178functions.c: 199release(start ref:2)
+JMPIDENTretain(start ref:1)functions.c: 127functions.c: 138functions.c: 166functions.c: 174 v->l:003E9CD8
+add to startlabel.c: 71 l(start)->ts:003E9D68
+basefuns.c: 55basefuns.c: 30basefuns.c: 32 l:003E9D68
+ l->p:003E9D80
+basefuns.c: 36basefuns.c: 39basefuns.c: 42basefuns.c: 57label.c: 74functions.c: 178functions.c: 199release(start ref:2)
+JMPIDENTretain(start ref:1)functions.c: 127functions.c: 138functions.c: 166functions.c: 174 v->l:003E9CD8
+add to startlabel.c: 71 l(start)->ts:003E9D68
+basefuns.c: 55basefuns.c: 30basefuns.c: 32 l:003E9D68
+ l->p:003E9DB8
+basefuns.c: 36basefuns.c: 39basefuns.c: 42basefuns.c: 57label.c: 74functions.c: 178functions.c: 199release(start ref:2)
+JMPIDENTretain(start ref:1)functions.c: 127functions.c: 138functions.c: 166functions.c: 174 v->l:003E9CD8
+add to startlabel.c: 71 l(start)->ts:003E9D68
+basefuns.c: 55basefuns.c: 30basefuns.c: 32 l:003E9D68
+ l->p:003E9DF0
+basefuns.c: 36basefuns.c: 39basefuns.c: 42basefuns.c: 57label.c: 74functions.c: 178functions.c: 199release(start ref:2)
+JMPIDENTretain(start ref:1)functions.c: 127functions.c: 138functions.c: 166functions.c: 174 v->l:003E9CD8
+add to startlabel.c: 71 l(start)->ts:003E9D68
+basefuns.c: 55basefuns.c: 30basefuns.c: 32 l:003E9D68
+ l->p:003E9E28
+basefuns.c: 36basefuns.c: 39basefuns.c: 42basefuns.c: 57label.c: 74functions.c: 178functions.c: 199release(start ref:2)
+JMPIDENTretain(start ref:1)functions.c: 127functions.c: 138functions.c: 166functions.c: 174 v->l:003E9CD8
+add to startlabel.c: 71 l(start)->ts:003E9D68
+basefuns.c: 55basefuns.c: 30basefuns.c: 32 l:003E9D68
+ l->p:003E9E60
+basefuns.c: 36basefuns.c: 39basefuns.c: 42basefuns.c: 57label.c: 74functions.c: 178functions.c: 199release(start ref:2)
+CMD_INFOIDENT{start t:203 v:0000 ref:1 kwn:N}
+	 t:203 seg:ROM addr:$8001 C:\Documents and Settings\Administrator\桌面\github\65ca\test\test.asm(6)
+	 t:203 seg:ROM addr:$8004 C:\Documents and Settings\Administrator\桌面\github\65ca\test\test.asm(7)
+	 t:203 seg:ROM addr:$8007 C:\Documents and Settings\Administrator\桌面\github\65ca\test\test.asm(8)
+	 t:203 seg:ROM addr:$800a C:\Documents and Settings\Administrator\桌面\github\65ca\test\test.asm(9)
+	 t:203 seg:ROM addr:$800d C:\Documents and Settings\Administrator\桌面\github\65ca\test\test.asm(10)
+	 t:203 seg:ROM addr:$8010 C:\Documents and Settings\Administrator\桌面\github\65ca\test\test.asm(11)
+
+
+IDENTCOLON
+CMD_INFOIDENT{start t:203 v:8012 ref:1 kwn:Y}
+
+CMD_INFOIDENT{ROM st:$8000 sz:128 fil:#$00 ix:18 addr:$8012}
+	 4c 12 80 4c 12 80 4c 12 80 4c 12 80 4c 12 80 4c
+	 12 80|xx xx xx xx xx xx xx xx xx xx xx xx xx xx
+	 xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx
+	 xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx
+	 xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx
+	 xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx
+	 xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx
+	 xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx
+
+CMD_EOF--->ROM
+compile success!!!

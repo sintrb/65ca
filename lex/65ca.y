@@ -72,7 +72,7 @@ line
 	: command
 	| instruction
 	| NL {
-		D("\n");
+		//D("\n");
 		if(curdefseg){
 			cmd_end_defseg();
 		}
@@ -207,7 +207,12 @@ ident
 		$$ = label_newval(BIN, btoi(yytext+1));
 	}
 	| OCT {
-		$$ = label_newval(OCT, atoi(yytext));
+		if(yytext[0]=='#'){
+			$$ = label_newval(HEX, atoi(yytext+1));
+		}
+		else{
+			$$ = label_newval(OCT, atoi(yytext));
+		}
 	}
 	| STR {
 		$$ = label_newval(STR, 0);

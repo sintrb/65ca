@@ -49,7 +49,7 @@ NL [;\n\r]
 			D("\n");
 	#endif
 	*/
-	curlinetype = LINETYPE_NORMAL;
+	// curlinetype = LINETYPE_NORMAL;
 }
 
 
@@ -115,8 +115,8 @@ BRK { RETTOKEN(BRK); }
 \#\${HEX}+ {
 	RETTOKEN(HEX);
 }
-\#{HEX}+ {
-	RETTOKEN(HEX);
+\#{OCT}+ {
+	RETTOKEN(OCT);
 }
 \%{BIN}+ {
 	RETTOKEN(BIN);
@@ -243,8 +243,14 @@ fill {
 	return NL;
 }
 
+\\\\.*{NL}+ {
+	curlinetype = LINETYPE_NORMAL;
+	return NL;
+}
+
 <<EOF>> {
 	RETTOKEN(CMD_EOF);
 }
+
 
 %%
