@@ -49,7 +49,12 @@ char *fileio_abspath_ix(const char *base, int end, const char *relative, int sta
 		while(relative[start] && ISSPLIT(relative[start])){
 			++start;
 		}
-
+		// /ab/c/d/ad
+		if(end>0 && !ISSPLIT(base[end]))
+			--end;
+		while(end>0 && !ISSPLIT(base[end])){
+			--end;
+		}
 		if(end>0)
 			--end;
 		while(end>0 && !ISSPLIT(base[end])){
@@ -91,5 +96,12 @@ char *fileio_abspath(const char *base, const char *relative){
 	abspath = fileio_abspath_ix(base, strlen(base)-1, relative, 0);
 	if(s)
 		FREE(s);
+	s = abspath;
+	while(*s){
+		if(ISSPLIT(*s))
+			*s = SPLIT;
+		++s;
+	}
+	// D("\n%s %s -> %s\n", base, relative, abspath);
 	return abspath;
 }

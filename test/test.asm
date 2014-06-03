@@ -3,7 +3,7 @@
 
 .inc "inc\inc1.asm"
 
-.incbin "about.txt"
+.incbin "test.asm"
 
 .info ROM
 
