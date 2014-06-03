@@ -1,0 +1,1265 @@
+.include "head.inc"
+.seg ROM
+.label nbasic_stack = 256
+.label snake = 0
+.label drawer = 512
+.label random_seed = 200
+.label k0 = 201
+.label k0_1 = 202
+.label k1 = 203
+.label k1_1 = 204
+.label str_stay_h = 205
+.label str_stay_l = 206
+.label str_n = 207
+.label snake_maxlong = 208
+.label snake_winlong = 209
+.label snake_long = 210
+.label egg01 = 211
+.label egg01_M = 212
+.label egg02 = 213
+.label egg02_M = 214
+.label egg03 = 215
+.label egg03_M = 216
+.label egg04 = 217
+.label egg04_M = 218
+.label wall = 219
+.label delayer_0 = 220
+.label add1_nl = 221
+.label add1_nh = 222
+.label add2_nl = 223
+.label add2_nh = 224
+.label sub1_nl = 225
+.label sub1_nh = 226
+.label sub2_nl = 227
+.label sub2_nh = 228
+.label snake_logend = 229
+.label leve = 230
+.label lose = 231
+.label joy1a = 232
+.label joy1b = 233
+.label joy1select = 234
+.label joy1start = 235
+.label joy1up = 236
+.label joy1down = 237
+.label joy1left = 238
+.label joy1right = 239
+.label clear_background_temp = 240
+.label snake_facing = 241
+.label moving = 242
+.label delayer = 243
+.label snake_headloc_h = 244
+.label snake_headloc_l = 245
+.label snake_endloc_h = 246
+.label snake_endloc_l = 247
+.label snake_headmark = 248
+.label snake_endmark = 249
+.label markendlater = 250
+.label sum_input = 251
+.label draw_sum000_h = 252
+.label draw_sum000_l = 253
+.label drawer_mark = 254
+.label draw_adder_h = 255
+.label draw_adder_l = 602
+.label draw_tileid = 603
+.label walls = 604
+.label egg_n = 605
+.label pointer = 606
+.label point_h = 607
+.label point_l = 608
+.label linelong = 609
+.label mod1 = 610
+.label mod2 = 611
+.label sum3 = 612
+.label sum2 = 613
+.label sum1 = 614
+.label div = 615
+.label temp02 = 616
+.label temp03 = 617
+.label temp01 = 618
+.label temp04 = 619
+.label Boom1 = 620
+.label sgg_n = 621
+
+.org $c000
+
+ jmp start
+
+data_str:
+	.dat #$89 #$79 #$85 #$32 #$76 #$79 #$83 #$69 #$0
+	.dat #$89 #$79 #$85 #$32 #$87 #$73 #$78 #$0
+	.dat #$60 #$60 #$32 #$71 #$82 #$69 #$69 #$68 #$89 #$32
+	.dat #$83 #$78 #$65 #$75 #$69 #$32 #$62 #$62 #$0
+	.dat #$71 #$65 #$77 #$69 #$32 #$76 #$69 #$86 #$69 #$76
+	.dat #$0
+	.dat #$89 #$79 #$85 #$32 #$80 #$65 #$83 #$83 #$0
+	.dat #$83 #$78 #$65 #$75 #$69 #$32 #$32 #$32 #$32 #$32
+	.dat #$32 #$80 #$65 #$83 #$83 #$0
+	.dat #$112 #$114 #$101 #$115 #$115 #$32 #$83 #$84 #$65 #$82
+	.dat #$84 #$46 #$0
+	.dat #$112 #$114 #$101 #$115 #$115 #$32 #$65 #$46 #$0
+
+start:
+ .info vwait_start
+ jsr vwait_start
+ .info vwait_start
+ .info vwait_start
+ cld
+ sei
+ lda #32
+ sta k0
+ lda #36
+ sta k0_1
+ lda #28
+ sta k1
+ lda #20
+ sta k1_1
+ lda k0
+ sta 8192
+ lda k1
+ sta 8193
+ jsr load_palette
+ jsr init_vars
+
+start_2:
+ jsr vwait
+ jsr clear_background
+ jsr vwait
+ jsr start_3
+ jmp start_4
+
+start_3:
+ jsr vwait_start
+ lda #32
+ sta str_stay_h
+ lda #231
+ sta str_stay_l
+ lda #17
+ sta str_n
+ jsr draw_string
+ lda #33
+ sta str_stay_h
+ lda #74
+ sta str_stay_l
+ lda #36
+ sta str_n
+ jsr draw_string
+ lda #0
+ sta 8199
+ lda #48
+ clc
+ adc leve
+ sta 8199
+
+start_3_1:
+ lda #33
+ sta str_stay_h
+ lda #202
+ sta str_stay_l
+ lda #72
+ sta str_n
+ jsr draw_string
+ jsr vwait_end
+
+start_3_2:
+ jsr vwait
+ jsr joystick1
+ lda #0
+ cmp joy1start
+ beq start_3_2
+ rts
+
+load_palette:
+ lda #63
+ sta 8198
+ lda #0
+ sta 8198
+ lda #15
+ sta 8199
+ lda #48
+ sta 8199
+ lda #42
+ sta 8199
+ lda #5
+ sta 8199
+ lda #63
+ sta 8198
+ lda #16
+ sta 8198
+ lda #15
+ sta 8199
+ lda #48
+ sta 8199
+ lda #42
+ sta 8199
+ lda #5
+ sta 8199
+ rts
+
+init_vars:
+ lda #92
+ sta snake_maxlong
+ lda #20
+ sta snake_winlong
+ lda #5
+ sta snake_long
+ lda #174
+ sta egg01
+ lda #3
+ sta egg01_M
+ lda #175
+ sta egg02
+ lda #2
+ sta egg02_M
+ lda #176
+ sta egg03
+ lda #1
+ sta egg03_M
+ lda #177
+ sta egg04
+ lda #4
+ sta egg04_M
+ lda #178
+ sta wall
+ lda #7
+ sta delayer_0
+ lda #0
+ sta add1_nl
+ lda #0
+ sta add1_nh
+ lda #32
+ sta add2_nl
+ lda #0
+ sta add2_nh
+ lda #0
+ sta sub1_nl
+ lda #0
+ sta sub1_nh
+ lda #32
+ sta sub2_nl
+ lda #0
+ sta sub2_nh
+ lda #199
+ sta snake_logend
+ lda #1
+ sta leve
+ lda #0
+ sta lose
+ lda #170
+ sta random_seed
+ rts
+
+draw_string:
+ lda str_stay_h
+ sta 8198
+ lda str_stay_l
+ sta 8198
+ ldx str_n
+
+draw_string_1:
+ lda data_str,x
+ sta 8199
+ inx
+ lda data_str,x
+ cmp #0
+ bne draw_string_1
+ rts
+
+joystick1:
+ lda #1
+ sta 16406
+ lda #0
+ sta 16406
+ lda 16406
+ and #1
+ sta joy1a
+ lda 16406
+ and #1
+ sta joy1b
+ lda 16406
+ and #1
+ sta joy1select
+ lda 16406
+ and #1
+ sta joy1start
+ lda 16406
+ and #1
+ sta joy1up
+ lda 16406
+ and #1
+ sta joy1down
+ lda 16406
+ and #1
+ sta joy1left
+ lda 16406
+ and #1
+ sta joy1right
+ rts
+
+vwait_start:
+
+ bit $2002
+ bpl vwait_start
+ rts
+
+vwait_end:
+
+ bit $2002
+ bmi vwait_end
+ lda #0
+ sta 8197
+ sta 8197
+ sta 8198
+ sta 8198
+ lda #255
+ sta 65529
+ rts
+
+vwait:
+ jsr vwait_start
+ jsr vwait_end
+ rts
+
+clear_background:
+ jsr vwait
+ jsr clear_background_one
+ jsr vwait
+ jsr clear_background_two
+ rts
+
+clear_background_one:
+ lda #32
+ sta clear_background_temp
+ jsr clear_background_helper
+ lda #33
+ sta clear_background_temp
+ jsr clear_background_helper
+ lda #34
+ sta clear_background_temp
+ jsr clear_background_helper
+ lda #35
+ sta clear_background_temp
+ jsr clear_background_helper
+ jsr vwait
+ rts
+
+clear_background_two:
+ lda #36
+ sta clear_background_temp
+ jsr clear_background_helper
+ lda #37
+ sta clear_background_temp
+ jsr clear_background_helper
+ lda #38
+ sta clear_background_temp
+ jsr clear_background_helper
+ lda #39
+ sta clear_background_temp
+ jsr clear_background_helper
+ jsr vwait
+ rts
+
+clear_background_helper:
+ jsr vwait
+ lda clear_background_temp
+ sta 8198
+ lda #0
+ sta 8198
+ lda #0
+ ldx #0
+
+clear_ppu_256_1:
+ sta 8199
+ sta 8199
+ sta 8199
+ sta 8199
+ sta 8199
+ sta 8199
+ sta 8199
+ sta 8199
+ sta 8199
+ sta 8199
+ sta 8199
+ sta 8199
+ sta 8199
+ sta 8199
+ sta 8199
+ sta 8199
+ inx
+ cpx #16
+ bne clear_ppu_256_1
+ rts
+
+clear_palette:
+ jsr vwait_start
+ lda #63
+ sta 8198
+ lda #0
+ sta 8198
+ ldx #0
+
+clear_palette_1:
+ lda #14
+ sta 8199
+ inx
+ cpx #32
+ bne clear_palette_1
+ jsr vwait_end
+ rts
+
+init_vars_1:
+ lda #2
+ sta snake_facing
+ lda #0
+ sta moving
+ lda #0
+ sta lose
+ lda delayer_0
+ sec
+ sbc leve
+ sta delayer
+ lda #33
+ sta snake_headloc_h
+ lda #10
+ sta snake_headloc_l
+ lda #33
+ sta snake_endloc_h
+ lda snake_long
+ clc
+ adc snake_headloc_l
+ sta snake_endloc_l
+ lda #0
+ sta snake_headmark
+ lda #0
+ sta snake_endmark
+ ldx snake_headmark
+ lda snake_headloc_h
+ sta snake,x
+ inx
+ lda snake_headloc_l
+ sta snake,x
+ lda #2
+ sta snake_headmark
+ lda snake_long
+ sta markendlater
+ rts
+
+start_4:
+ jsr init_vars_1
+ jsr clear_background
+ jsr draw_background
+ jsr draw_backsome
+ jsr vwait_start
+ lda #32
+ sta str_stay_h
+ lda #35
+ sta str_stay_l
+ lda #56
+ sta str_n
+ jsr draw_string
+ jsr vwait_end
+ lda snake_winlong
+ sta sum_input
+ lda #32
+ sta draw_sum000_h
+ lda #51
+ sta draw_sum000_l
+ jsr draw_sum000
+ lda snake_long
+ sta sum_input
+ lda #32
+ sta draw_sum000_h
+ lda #41
+ sta draw_sum000_l
+ jsr draw_sum000
+ jmp mainloop
+
+draw_backsome:
+ lda #0
+ sta drawer_mark
+ lda #33
+ sta draw_adder_h
+ lda #102
+ sta draw_adder_l
+ lda egg03
+ sta draw_tileid
+ jsr mark_drawer
+ lda #32
+ sta draw_adder_h
+ lda #185
+ sta draw_adder_l
+ lda egg04
+ sta draw_tileid
+ jsr mark_drawer
+ lda #34
+ sta draw_adder_h
+ lda #145
+ sta draw_adder_l
+ lda egg03
+ sta draw_tileid
+ jsr mark_drawer
+ lda #0
+ sta walls
+
+draw_backsome_1:
+ lda wall
+ sta egg_n
+ jsr mark_egg
+ inc walls
+ lda #9
+ cmp walls
+ bcs draw_backsome_1
+ lda egg01
+ sta egg_n
+ jsr mark_egg
+ lda snake_headloc_h
+ sta draw_adder_h
+ lda snake_headloc_l
+ sta draw_adder_l
+ lda #172
+ sta draw_tileid
+ jsr mark_drawer
+ jsr draw_something
+ rts
+
+draw_background:
+ lda wall
+ sta pointer
+ jsr vwait_start
+ lda #32
+ sta point_h
+ lda #65
+ sta point_l
+ lda #30
+ sta linelong
+ jsr draw_aline
+ lda #35
+ sta point_h
+ lda #129
+ sta point_l
+ lda #30
+ sta linelong
+ jsr draw_aline
+ lda #32
+ sta point_h
+ lda #97
+ sta point_l
+ lda #25
+ sta linelong
+ jsr draw_aVerticalLine
+ lda #32
+ sta point_h
+ lda #126
+ sta point_l
+ lda #25
+ sta linelong
+ jsr draw_aVerticalLine
+ jsr vwait_end
+ rts
+
+draw_aline:
+ lda point_h
+ sta 8198
+ lda point_l
+ sta 8198
+ ldx #0
+
+draw_aline_1:
+ lda pointer
+ sta 8199
+ inx
+ cpx linelong
+ bmi draw_aline_1
+ rts
+
+draw_aVerticalLine:
+ lda k0_1
+ sta 8192
+ jsr draw_aline
+ lda k0
+ sta 8192
+ rts
+
+mark_drawer:
+ ldx drawer_mark
+
+mark_drawer_1:
+ lda draw_adder_h
+ sta drawer,x
+ inx
+ lda draw_adder_l
+ sta drawer,x
+ inx
+ lda draw_tileid
+ sta drawer,x
+ inx
+ txa
+ sta drawer_mark
+ rts
+
+draw_something:
+ ldx #0
+ jsr vwait_start
+
+draw_something_1:
+ lda drawer,x
+ sta 8198
+ inx
+ lda drawer,x
+ sta 8198
+ inx
+ lda drawer,x
+ sta 8199
+ inx
+ cpx drawer_mark
+ bne draw_something_1
+ jsr vwait_end
+ lda #0
+ sta drawer_mark
+ rts
+
+draw_sum000:
+ lda sum_input
+ sta mod1
+ lda #10
+ sta mod2
+ jsr mod_div
+ lda mod1
+ sta sum3
+ lda div
+ sta mod1
+ jsr mod_div
+ lda mod1
+ sta sum2
+ lda div
+ sta sum1
+ jsr vwait_start
+ lda draw_sum000_h
+ sta 8198
+ lda draw_sum000_l
+ sta 8198
+ lda #48
+ clc
+ adc sum1
+ sta 8199
+ lda #48
+ clc
+ adc sum2
+ sta 8199
+ lda #48
+ clc
+ adc sum3
+ sta 8199
+ jsr vwait_end
+ rts
+
+mod_div:
+ lda #0
+ sta div
+
+mod_1:
+ lda mod2
+ cmp mod1
+ beq mod_2
+ lda mod2
+ cmp mod1
+ bcs mod_3
+
+mod_2:
+ lda mod1
+ sec
+ sbc mod2
+ sta mod1
+ inc div
+ jmp mod_1
+
+mod_3:
+ rts
+
+mark_egg:
+ jsr random_number
+ lda random_seed
+ sta temp02
+ lda snake_endloc_l
+ clc
+ adc random_seed
+ sta random_seed
+ lda random_seed
+ clc
+ asl
+ asl
+ sta random_seed
+ jsr random_number
+ lda random_seed
+ sta temp03
+ lda temp02
+ sta mod1
+ lda #26
+ sta mod2
+ jsr mod_div
+ lda #3
+ clc
+ adc mod1
+ sta temp02
+ lda temp03
+ sta mod1
+ lda #20
+ sta mod2
+ jsr mod_div
+ lda #4
+ clc
+ adc mod1
+ sta temp03
+ lda temp03
+ clc
+ asl
+ sta temp03
+ lda #240
+ and temp03
+ sta temp01
+ lda temp01
+ clc
+ lsr
+ lsr
+ lsr
+ lsr
+ sta temp01
+ lda #32
+ clc
+ adc temp01
+ sta temp01
+ lda #15
+ and temp03
+ sta temp04
+ lda temp04
+ clc
+ asl
+ asl
+ asl
+ asl
+ sta temp04
+ lda temp04
+ clc
+ adc temp02
+ sta temp02
+ lda temp01
+ sta draw_adder_h
+ lda temp02
+ sta draw_adder_l
+ lda egg_n
+ sta draw_tileid
+ jsr mark_drawer
+ rts
+
+random_number:
+
+	lda random_seed
+	and #$b8
+	ldx #$05
+	ldx #$00
+random_number_floop:
+		asl
+		bcc random_number_bitclr
+		iny
+random_number_bitclr:
+		dex
+		bne random_number_floop
+random_number_noclr:
+		tya
+		lsr
+		lda random_seed
+		rol
+		sta random_seed
+		rts
+
+mainloop:
+ lda #0
+ sta 16405
+ jsr vwait
+ jsr joy_handler
+ lda #0
+ cmp moving
+ beq mainloop_1
+ jsr draw_snake
+
+mainloop_1:
+ lda #0
+ cmp Boom1
+ beq nbasic_autolabel_1
+ jsr Boom
+
+nbasic_autolabel_1:
+ lda delayer
+ sta temp02
+
+mainloop_2:
+ lda temp02
+ sec
+ sbc #1
+ sta temp02
+ jsr vwait
+ lda #0
+ cmp temp02
+ bmi mainloop_2
+ jmp mainloop_3
+
+draw_snake:
+ lda #0
+ sta drawer_mark
+ lda snake_headloc_h
+ sta draw_adder_h
+ lda snake_headloc_l
+ sta draw_adder_l
+ lda #128
+ sta draw_tileid
+ jsr mark_drawer
+ lda #1
+ cmp snake_facing
+ bne nbasic_autolabel_2
+ inc snake_headloc_l
+
+nbasic_autolabel_2:
+ lda #0
+ cmp snake_facing
+ bne nbasic_autolabel_3
+ dec snake_headloc_l
+
+nbasic_autolabel_3:
+ lda #3
+ cmp snake_facing
+ bne nbasic_autolabel_4
+ lda snake_headloc_h
+ sta add1_nh
+ lda snake_headloc_l
+ sta add1_nl
+ lda #32
+ sta add2_nl
+ lda #0
+ sta add2_nh
+ jsr add16
+ lda add1_nh
+ sta snake_headloc_h
+ lda add1_nl
+ sta snake_headloc_l
+
+nbasic_autolabel_4:
+ lda #2
+ cmp snake_facing
+ bne nbasic_autolabel_5
+ lda snake_headloc_h
+ sta sub1_nh
+ lda snake_headloc_l
+ sta sub1_nl
+ lda #32
+ sta sub2_nl
+ lda #0
+ sta sub2_nh
+ jsr sub16
+ lda sub1_nh
+ sta snake_headloc_h
+ lda sub1_nl
+ sta snake_headloc_l
+
+nbasic_autolabel_5:
+ lda snake_headloc_h
+ sta draw_adder_h
+ lda snake_headloc_l
+ sta draw_adder_l
+ lda #170
+ clc
+ adc snake_facing
+ sta draw_tileid
+ jsr mark_drawer
+ jsr markhead
+ lda #0
+ cmp markendlater
+ bmi draw_snake_1
+ jsr readendmark
+ lda snake_endloc_h
+ sta draw_adder_h
+ lda snake_endloc_l
+ sta draw_adder_l
+ lda #0
+ sta draw_tileid
+ jsr mark_drawer
+ jmp draw_snake_2
+
+draw_snake_1:
+ dec markendlater
+
+draw_snake_2:
+ jsr CheckBoom
+ jsr draw_something
+ rts
+
+CheckBoom:
+ lda #0
+ sta Boom1
+ jsr vwait_start
+ lda snake_headloc_h
+ sta 8198
+ lda snake_headloc_l
+ sta 8198
+ lda 8199
+ sta Boom1
+ jsr vwait_end
+ rts
+
+Boom:
+ lda wall
+ cmp Boom1
+ bne nbasic_autolabel_6
+ lda #1
+ sta lose
+
+nbasic_autolabel_6:
+ lda #128
+ cmp Boom1
+ bne nbasic_autolabel_7
+ lda #1
+ sta lose
+
+nbasic_autolabel_7:
+ lda egg01
+ cmp Boom1
+ beq Boom_1
+ lda egg02
+ cmp Boom1
+ beq Boom_2
+ lda egg03
+ cmp Boom1
+ beq Boom_3
+ lda egg04
+ cmp Boom1
+ beq Boom_4
+ jmp Boom_z
+
+Boom_1:
+ lda egg01_M
+ clc
+ adc markendlater
+ sta markendlater
+ jmp Boom_x
+
+Boom_2:
+ lda egg02_M
+ clc
+ adc markendlater
+ sta markendlater
+ jmp Boom_x
+
+Boom_3:
+ lda egg03_M
+ clc
+ adc markendlater
+ sta markendlater
+ jmp Boom_x
+
+Boom_4:
+ lda egg04_M
+ clc
+ adc markendlater
+ sta markendlater
+
+Boom_x:
+ lda markendlater
+ clc
+ adc snake_long
+ sta snake_long
+ lda #0
+ sta drawer_mark
+ lda wall
+ sta egg_n
+ jsr mark_egg
+ jsr mark_egg
+ lda egg01
+ sta egg_n
+ jsr mark_egg
+ lda egg02
+ sta sgg_n
+ jsr mark_egg
+ lda snake_headloc_h
+ sta draw_adder_h
+ lda snake_headloc_l
+ sta draw_adder_l
+ lda #170
+ clc
+ adc snake_facing
+ sta draw_tileid
+ jsr mark_drawer
+ jsr draw_something
+ lda snake_long
+ sta sum_input
+ lda #32
+ sta draw_sum000_h
+ lda #41
+ sta draw_sum000_l
+ jsr draw_sum000
+ lda snake_winlong
+ cmp snake_long
+ bpl nbasic_autolabel_8
+ lda #2
+ sta lose
+
+nbasic_autolabel_8:
+
+Boom_z:
+ lda #0
+ sta Boom1
+ rts
+
+markhead:
+ ldx snake_headmark
+ lda snake_headloc_h
+ sta snake,x
+ inx
+ lda snake_headloc_l
+ sta snake,x
+ inc snake_headmark
+ inc snake_headmark
+ lda snake_logend
+ cmp snake_headmark
+ bcc nbasic_autolabel_9
+ jmp markhead_1
+
+nbasic_autolabel_9:
+ lda #0
+ sta snake_headmark
+
+markhead_1:
+ rts
+
+readendmark:
+ ldx snake_endmark
+ lda snake,x
+ sta snake_endloc_h
+ lda #0
+ sta snake,x
+ inx
+ lda snake,x
+ sta snake_endloc_l
+ lda #0
+ sta snake,x
+ inc snake_endmark
+ inc snake_endmark
+ lda snake_logend
+ cmp snake_endmark
+ bcs readendmark_1
+ lda #0
+ sta snake_endmark
+
+readendmark_1:
+ rts
+
+joy_handler:
+ jsr joystick1
+ lda #1
+ cmp joy1select
+ bne nbasic_autolabel_10
+ jmp joy_handler_3
+
+nbasic_autolabel_10:
+ lda #0
+ cmp snake_facing
+ bne nbasic_autolabel_11
+ lda #0
+ sta joy1right
+
+nbasic_autolabel_11:
+ lda #1
+ cmp snake_facing
+ bne nbasic_autolabel_12
+ lda #0
+ sta joy1left
+
+nbasic_autolabel_12:
+ lda #2
+ cmp snake_facing
+ bne nbasic_autolabel_13
+ lda #0
+ sta joy1down
+
+nbasic_autolabel_13:
+ lda #3
+ cmp snake_facing
+ bne nbasic_autolabel_14
+ lda #0
+ sta joy1up
+
+nbasic_autolabel_14:
+ lda #1
+ cmp moving
+ beq joy_handler_2
+ lda #0
+ sta temp01
+
+		lda #$0
+		ora joy1left
+		ora joy1right
+		ora joy1up
+		ora joy1down
+		sta temp01
+	 lda #0
+ cmp temp01
+ bne nbasic_autolabel_15
+ jmp joy_handler_2
+
+nbasic_autolabel_15:
+ lda #1
+ sta moving
+ lda #1
+ sta 16405
+ lda #31
+ sta 16384
+ lda #150
+ sta 16385
+ lda #239
+ sta 16386
+ lda #8
+ sta 16387
+
+joy_handler_2:
+ lda #1
+ cmp joy1left
+ bne nbasic_autolabel_16
+ lda #0
+ sta snake_facing
+
+nbasic_autolabel_16:
+ lda #1
+ cmp joy1right
+ bne nbasic_autolabel_17
+ lda #1
+ sta snake_facing
+
+nbasic_autolabel_17:
+ lda #1
+ cmp joy1up
+ bne nbasic_autolabel_18
+ lda #2
+ sta snake_facing
+
+nbasic_autolabel_18:
+ lda #1
+ cmp joy1down
+ bne nbasic_autolabel_19
+ lda #3
+ sta snake_facing
+
+nbasic_autolabel_19:
+ jmp joy_handler_4
+
+joy_handler_3:
+ lda #0
+ sta moving
+
+joy_handler_4:
+ rts
+
+add16:
+
+		lda add1_nl ;//mov a,add1_number_l
+		clc
+		adc add2_nl ;//add a,add2_number_l
+		sta add1_nl ;//mov add1_number_l,a
+		lda add1_nh ;//mov a,add1_number_h
+		adc add2_nh ;//addc a,add2_number_h
+		sta add1_nh ;//mov add1_number_h,a
+	 rts
+
+sub16:
+
+		lda sub1_nl
+		sec
+		sbc sub2_nl
+		sta sub1_nl
+		lda sub1_nh
+		sbc sub2_nh
+		sta sub1_nh
+	 rts
+
+mainloop_3:
+ lda #1
+ cmp lose
+ beq mainloop_4
+ lda #2
+ cmp lose
+ beq mainloop_7
+ jmp mainloop
+
+mainloop_4:
+ lda #0
+ sta moving
+ lda #5
+ clc
+ adc leve
+ sta snake_long
+ jsr vwait_start
+ lda #33
+ sta str_stay_h
+ lda #138
+ sta str_stay_l
+ lda #0
+ sta str_n
+ jsr draw_string
+ jmp mainloop_6
+
+mainloop_5:
+ lda #0
+ sta moving
+ jsr vwait_start
+ lda #33
+ sta str_stay_h
+ lda #138
+ sta str_stay_l
+ lda #9
+ sta str_n
+ jsr draw_string
+ jsr vwait_end
+
+mainloop_5_1:
+ jmp mainloop_5_1
+
+mainloop_6:
+ lda #33
+ sta str_stay_h
+ lda #202
+ sta str_stay_l
+ lda #85
+ sta str_n
+ jsr draw_string
+ jsr vwait_end
+
+mainloop_6_1:
+ jsr vwait
+ jsr joystick1
+ lda #0
+ cmp joy1a
+ beq mainloop_6_1
+ jmp start_2
+
+mainloop_7:
+ lda snake_maxlong
+ cmp snake_long
+ bmi mainloop_5
+ inc leve
+ lda #12
+ clc
+ adc snake_winlong
+ sta snake_winlong
+ lda #5
+ clc
+ adc leve
+ sta snake_long
+ lda #0
+ sta moving
+ jsr vwait_start
+ lda #33
+ sta str_stay_h
+ lda #138
+ sta str_stay_l
+ lda #47
+ sta str_n
+ jsr draw_string
+ jmp mainloop_6
+
+;//jump table points to NMI, Reset, and IRQ start points
