@@ -336,3 +336,17 @@ void cmd_eof(){
 		exit(0);
 	}
 }
+
+void cmd_incbin(const char *name){
+	struct filestate * top = (struct filestate *)stack_top(files);
+	char *filename = fileio_abspath(top?top->name:NULL, name);
+	FILE *fp = NULL;
+	int ch;
+	M_CHECKCURSEG();
+	fp = fileio_open(filename, "rb");
+	while((ch = fgetc(fp))!=EOF){
+		segment_write(curseg, ch&0x00ff);
+	}
+	FREE(filename);
+	fclose(fp);
+}

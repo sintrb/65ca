@@ -85,4 +85,7 @@ void cmd_inc(const char *name);
 
 // 结束包含
 void cmd_eof();
+
+// 包含二进制文件
+void cmd_incbin(const char *name);
 #endif

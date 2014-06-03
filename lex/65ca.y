@@ -41,7 +41,7 @@
 
 
 // command
-%token CMD_ORG CMD_LAB CMD_DEFSEG CMD_INFO CMD_SEG CMD_DAT CMD_INC CMD_EOF
+%token CMD_ORG CMD_LAB CMD_DEFSEG CMD_INFO CMD_SEG CMD_DAT CMD_INC CMD_EOF CMD_INCBIN
 
 // defseg
 %token CMD_DEFSEG_NAME CMD_DEFSEG_START CMD_DEFSEG_SIZE CMD_DEFSEG_FILL 
@@ -291,6 +291,16 @@ command
 	}
 	| CMD_EOF {
 		cmd_eof();
+	}
+	| CMD_INCBIN ident {
+		// .include bin
+		if($2->label){
+			$2->label->name[strlen($2->label->name)-1]='\0';
+			cmd_incbin($2->label->name+1);
+			FREE($2->label->name);
+			FREE($2->label);
+		}
+		FREE($2);
 	}
 	| cmdlabel
 	| cmd_segdef
